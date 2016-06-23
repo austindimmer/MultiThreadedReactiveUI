@@ -1,0 +1,17 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MultiThreadedReactiveUI.Resources">
+    
+    	<DataTemplate x:Key="FunctionDataTemplate">
+		<StackPanel Orientation="Vertical">
+			<TextBlock Text="{Binding DisplayName}"
+						   FontWeight="SemiBold"
+						   Foreground="{StaticResource AccentBrush}" />
+			<TextBlock Text="{Binding Category}"
+						   FontWeight="Light"
+						   Foreground="{StaticResource BasicBrush}" />
+		</StackPanel>
+	</DataTemplate>
+    
+    
+</ResourceDictionary>
