@@ -14,6 +14,7 @@ using ReactiveUI;
 using MultiThreadedReactiveUI.DataProvider;
 using WPF_Task.ViewModel;
 using MultiThreadedReactiveUI.Model;
+using ReactiveUI.Fody.Helpers;
 
 #endregion
 
@@ -46,5 +47,7 @@ namespace MultiThreadedReactiveUI.ViewModel
             SelectedFunction = Functions.Count > 0 ? Functions.First() : null;
         }
 
-    }
+        [Reactive]public string ExecutionLabel{ get; set; }
+
+}
 }

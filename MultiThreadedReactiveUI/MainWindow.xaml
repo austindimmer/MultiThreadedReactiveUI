@@ -6,123 +6,90 @@
                        xmlns:local="clr-namespace:MultiThreadedReactiveUI"
                        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                        mc:Ignorable="d"
-                       Title="MainWindow"
-                       Height="350"
-                       Width="525">
+                       Title="MultiThreadedReactiveUI">
     <Grid x:Name="LayoutRoot">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="0.3*"></ColumnDefinition>
+            <ColumnDefinition Width="0.1*"></ColumnDefinition>
+            <ColumnDefinition Width="0.3*"></ColumnDefinition>
+            <ColumnDefinition Width="0.3*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"
-                           MinHeight="200"></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition Height="0.6*"></RowDefinition>
+            <RowDefinition Height="0.1*"></RowDefinition>
+            <RowDefinition Height="0.1*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="ComboBoxLayout"
-              Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Label Grid.Row="0">Function Category</Label>
-            <ComboBox Grid.Row="1"
-                      x:Name="FunctionCategorySelector"></ComboBox>
-        </Grid>
-        <Grid x:Name="FunctionsLayout"
-              Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
-            <Label Grid.Row="0">Functions</Label>
-            <ListBox Grid.Row="1"
-                     x:Name="FunctionsSelector"></ListBox>
-        </Grid>
+        <StackPanel x:Name="FunctionCategoriesLayout"
+                    Grid.Row="0">
+            <Label>Function Category</Label>
+            <ComboBox x:Name="FunctionCategorySelector"></ComboBox>
+        </StackPanel>
 
-        <Grid x:Name="ProgressLayout"
-              Grid.Row="2"
-              Grid.ColumnSpan="4">
+        <StackPanel x:Name="FunctionsSelectorLayout"
+                    Grid.Row="1">
+            <Label>Functions</Label>
+            <ListBox x:Name="FunctionsSelector"
+                     Height="Auto"
+                     MinHeight="75"></ListBox>
+        </StackPanel>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="5"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Label Grid.Row="0"></Label>
-            <ProgressBar Grid.Row="1"
-                         x:Name="ProgressBar"></ProgressBar>
-        </Grid>
 
-        <Grid x:Name="SelectorButtonsLayoutRoot"
-              Grid.Row="0"
-              Grid.RowSpan="2"
-              Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid x:Name="SelectorButtonsLayout"
-                  Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"></RowDefinition>
-                    <RowDefinition Height="25"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Button Grid.Row="0"
-                        Content="&gt;&gt;"></Button>
-                <Button Grid.Row="1"
-                        Content="&lt;&lt;"></Button>
-            </Grid>
-        </Grid>
+        <StackPanel x:Name="SelectorButtonsLayout"
+                    Grid.Row="1"
+                    Grid.Column="1">
+            <Button Grid.Row="0"
+                    Content="&gt;&gt;"></Button>
+            <Button Grid.Row="1"
+                    Content="&lt;&lt;"></Button>
+        </StackPanel>
 
-        <Grid x:Name="TasksLayout"
-              Grid.Column="2"
-              Grid.RowSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
+
+        <StackPanel x:Name="TasksSelectorLayout"
+                    Grid.Column="2"
+                    Grid.RowSpan="2">
             <Label Grid.Row="0">Tasks</Label>
             <ListBox Grid.Row="1"
-                     x:Name="TasksSelector"></ListBox>
-        </Grid>
+                     x:Name="TasksSelector"
+                     Height="Auto"
+                     MinHeight="75"></ListBox>
+        </StackPanel>
 
-        <Grid x:Name="VariablesLayout"
-              Grid.Column="4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
+        <StackPanel x:Name="VariablesLayout"
+                    Grid.Column="4" Grid.RowSpan="2">
             <Label Grid.Row="0">Parameter</Label>
             <TextBox Grid.Row="1"
                      x:Name="ParameterTextBox"></TextBox>
             <Label Grid.Row="2">Iterations</Label>
             <TextBox Grid.Row="3"
                      x:Name="IterationsTextBox"></TextBox>
-        </Grid>
+        </StackPanel>
 
-        <Button Grid.Row="4"
-                Grid.Column="3" Content="{Binding Path=ExecutionLabel}"></Button>
+        <StackPanel x:Name="ExecuteCancelButtonLayout"
+                    Grid.Row="2"
+                    Grid.Column="3">
+            <!--<Button Content="{Binding Path=ExecutionLabel}"
+                    Style="{StaticResource AccentedSquareButtonStyle}"></Button>-->
+                        <Button Content="Execute All Functions"
+                    Style="{StaticResource AccentedSquareButtonStyle}"></Button>
+        </StackPanel>
+
+        <StackPanel x:Name="ProgressLayout"
+                    Grid.Row="4"
+                    Grid.ColumnSpan="4">
+            <Label>Progress Percentage</Label>
+            <Controls:MetroProgressBar x:Name="ProgressBar"
+                                       IsIndeterminate="True"
+                                       Foreground="White" />
+
+
+        </StackPanel>
+
+
+
+
+
 
     </Grid>
 </Controls:MetroWindow>

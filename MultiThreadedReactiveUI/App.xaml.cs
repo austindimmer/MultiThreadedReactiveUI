@@ -45,13 +45,11 @@ namespace MultiThreadedReactiveUI
         private static void EnsureXamlResources(Application app)
         {
 
-            var globalStylesDictionary = new ResourceDictionary();
+            
             var dataTemplatesDictionary = new ResourceDictionary();
 
 
 
-            globalStylesDictionary.Source = new Uri("pack://application:,,,/MultiThreadedReactiveUI;component/Resources/Styles/GlobalStyles.xaml", UriKind.RelativeOrAbsolute);
-            app.Resources.MergedDictionaries.Add(globalStylesDictionary);
 
             dataTemplatesDictionary.Source = new Uri("pack://application:,,,/MultiThreadedReactiveUI;component/Resources/DataTemplates.xaml", UriKind.RelativeOrAbsolute);
             app.Resources.MergedDictionaries.Add(dataTemplatesDictionary);
@@ -83,6 +81,10 @@ namespace MultiThreadedReactiveUI
 
             mahAppsIcons.Source = new Uri("pack://application:,,,/MultiThreadedReactiveUI;component//Resources/Icons.xaml", UriKind.RelativeOrAbsolute);
             app.Resources.MergedDictionaries.Add(mahAppsIcons);
+
+            var globalStylesDictionary = new ResourceDictionary();
+            globalStylesDictionary.Source = new Uri("pack://application:,,,/MultiThreadedReactiveUI;component/Resources/Styles/GlobalStyles.xaml", UriKind.RelativeOrAbsolute);
+            app.Resources.MergedDictionaries.Add(globalStylesDictionary);
 
 
         }
