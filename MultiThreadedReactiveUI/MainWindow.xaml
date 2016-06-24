@@ -26,7 +26,7 @@
                     Grid.Row="0">
             <Label>Function Category</Label>
             <ComboBox x:Name="FunctionCategorySelector" ItemsSource="{Binding Path=FunctionCategories}"
-                       SelectedItem="{Binding Path=SelectedCategory}"></ComboBox>
+                       SelectedItem="{Binding Path=SelectedCategory}" SelectionChanged="FunctionCategorySelector_SelectionChanged"></ComboBox>
         </StackPanel>
 
         <StackPanel x:Name="FunctionsSelectorLayout"
@@ -37,6 +37,8 @@
                      MinHeight="75"
                      ItemsSource="{Binding Path=Functions}"
                      ItemTemplate="{StaticResource FunctionDataTemplate}"
+                     SelectionChanged="FunctionsSelectorList_SelectionChanged"
+                     SelectionMode="Extended"
                      ></ListBox>
         </StackPanel>
 
@@ -45,9 +47,11 @@
                     Grid.Row="1"
                     Grid.Column="1">
             <Button Grid.Row="0"
-                    Content="&gt;&gt;"></Button>
+                    Content="&gt;&gt;"
+                    Command="{Binding Path=AddFunctionToFunctionsToExecute}"></Button>
             <Button Grid.Row="1"
-                    Content="&lt;&lt;"></Button>
+                    Content="&lt;&lt;"
+                    Command="{Binding Path=RemoveFunctionFromFunctionsToExecute}"></Button>
         </StackPanel>
 
 
@@ -58,7 +62,12 @@
             <ListBox Grid.Row="1"
                      x:Name="TasksSelectorList"
                      Height="Auto"
-                     MinHeight="75"></ListBox>
+                     MinHeight="75"
+                     ItemsSource="{Binding Path=SelectedFunctions}"
+                     ItemTemplate="{StaticResource FunctionDataTemplate}"
+                     SelectionChanged="TasksSelectorList_SelectionChanged"
+                     SelectionMode="Extended"
+                     ></ListBox>
         </StackPanel>
 
         <StackPanel x:Name="VariablesLayout"
@@ -77,6 +86,7 @@
             <!--<Button Content="{Binding Path=ExecutionLabel}"
                     Style="{StaticResource AccentedSquareButtonStyle}"></Button>-->
                         <Button Content="Execute All Functions"
+                                Command="{Binding Path=StartAsyncCommand}"
                     Style="{StaticResource AccentedSquareButtonStyle}"></Button>
         </StackPanel>
 
@@ -85,7 +95,8 @@
                     Grid.ColumnSpan="4">
             <Label>Progress Percentage</Label>
             <Controls:MetroProgressBar x:Name="ProgressBar"
-                                       IsIndeterminate="True"
+                                       IsIndeterminate="{Binding Path=IsBusyIndeterminate}"
+                                       Value="{Binding Path=Progress}"
                                        Foreground="White" />
 
 
