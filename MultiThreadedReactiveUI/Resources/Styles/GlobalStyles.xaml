@@ -21,12 +21,13 @@
     </Style>
 
     <Style TargetType="Label">
+        <Setter Property="Foreground" Value="{StaticResource ResourceKey=IdealForegroundColorBrush}"></Setter>
         <Setter Property="FontWeight"
                 Value="Bold"></Setter>
         <Setter Property="FontFamily"
                 Value="SegoeUI"></Setter>
                 <Setter Property="Margin"
-                Value="4"></Setter>
+                Value="1,4,4,4"></Setter>
     </Style>
 
     <Style x:Key="ButtonStyle"

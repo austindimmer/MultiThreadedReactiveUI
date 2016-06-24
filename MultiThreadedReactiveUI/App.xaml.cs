@@ -46,13 +46,7 @@ namespace MultiThreadedReactiveUI
         {
 
             
-            var dataTemplatesDictionary = new ResourceDictionary();
 
-
-
-
-            dataTemplatesDictionary.Source = new Uri("pack://application:,,,/MultiThreadedReactiveUI;component/Resources/DataTemplates.xaml", UriKind.RelativeOrAbsolute);
-            app.Resources.MergedDictionaries.Add(dataTemplatesDictionary);
 
             var mahAppsControls = new ResourceDictionary();
             var mahAppsFonts = new ResourceDictionary();
@@ -85,6 +79,10 @@ namespace MultiThreadedReactiveUI
             var globalStylesDictionary = new ResourceDictionary();
             globalStylesDictionary.Source = new Uri("pack://application:,,,/MultiThreadedReactiveUI;component/Resources/Styles/GlobalStyles.xaml", UriKind.RelativeOrAbsolute);
             app.Resources.MergedDictionaries.Add(globalStylesDictionary);
+
+            var dataTemplatesDictionary = new ResourceDictionary();
+            dataTemplatesDictionary.Source = new Uri("pack://application:,,,/MultiThreadedReactiveUI;component/Resources/DataTemplates.xaml", UriKind.RelativeOrAbsolute);
+            app.Resources.MergedDictionaries.Add(dataTemplatesDictionary);
 
 
         }
