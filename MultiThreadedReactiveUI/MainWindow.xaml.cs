@@ -16,32 +16,49 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics.Contracts;
 using MultiThreadedReactiveUI.Model;
+using ReactiveUI;
 
 namespace MultiThreadedReactiveUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : MetroWindow, IViewFor<IMainViewModel>
     {
-        public MainViewModel _MainViewModel { get; set; }
+
+        public IMainViewModel ViewModel
+        {
+            get { return (IMainViewModel)GetValue(ViewModelProperty); }
+            set { SetValue(ViewModelProperty, value); }
+        }
+        public static readonly DependencyProperty ViewModelProperty =
+            DependencyProperty.Register("ViewModel", typeof(IMainViewModel), typeof(MainWindow), new PropertyMetadata(null));
+
+        object IViewFor.ViewModel
+        {
+            get { return ViewModel; }
+            set { ViewModel = (IMainViewModel)value; }
+        }
+
         public MainWindow(MainViewModel viewModel)
         {
             Contract.Requires(viewModel != null, "viewModel is null.");
             InitializeComponent();
-            _MainViewModel = viewModel;
+            ViewModel = viewModel;
             this.DataContext = viewModel;
+            //Setup two way binding with ViewModel
+            this.Bind(ViewModel, x => x.SelectedTask, x => x.TasksSelectorList.SelectedItem);
         }
 
 
         private void FunctionsSelectorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListBox lb = sender as ListBox;
-            _MainViewModel.SelectedFunctions.Clear();
+            ViewModel.SelectedFunctions.Clear();
             foreach (var selectedItem in lb.SelectedItems)
             {
                 Function func = selectedItem as Function;
-                _MainViewModel.SelectedFunctions.Add(func);
+                ViewModel.SelectedFunctions.Add(func);
             }
             
         }
@@ -50,18 +67,14 @@ namespace MultiThreadedReactiveUI
         {
             ComboBox combo = sender as ComboBox;
             var selectedItem = combo.SelectedValue.ToString();
-            _MainViewModel.SelectedCategory = selectedItem;
+            ViewModel.SelectedCategory = selectedItem;
         }
 
         private void TasksSelectorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ListBox lb = sender as ListBox;
-            _MainViewModel.SelectedTask.Clear();
-            foreach (var selectedItem in lb.SelectedItems)
-            {
-                Function func = selectedItem as Function;
-                _MainViewModel.SelectedTask.Add(func);
-            }
+            //ListBox lb = sender as ListBox;
+            //ViewModel.SelectedTask = lb.SelectedItem as ComputationTaskViewModel;
+
         }
     }
 }

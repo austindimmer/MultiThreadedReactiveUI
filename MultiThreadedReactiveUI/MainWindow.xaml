@@ -58,11 +58,11 @@
 
         <StackPanel x:Name="TasksSelectorLayout"
                     Grid.Column="2"
+                    Grid.RowSpan="2"
                     >
             <Label Grid.Row="0">Tasks</Label>
-            <ListBox Grid.Row="1" Grid.RowSpan="2"
+            <ListBox Grid.Row="1" 
                      x:Name="TasksSelectorList"
-                     MinHeight="200"
                      ItemsSource="{Binding Path=TasksToExecute}"
                      ItemTemplate="{StaticResource TaskDataTemplate}"
                      SelectionChanged="TasksSelectorList_SelectionChanged"
@@ -71,13 +71,19 @@
 
         <StackPanel x:Name="VariablesLayout"
                     Grid.Column="4"
-                    Grid.RowSpan="2">
+                    Grid.RowSpan="2"
+                    DataContext="{Binding Path=SelectedTask}"
+                    >
             <Label Grid.Row="0">Parameter</Label>
             <TextBox Grid.Row="1"
-                     x:Name="ParameterTextBox"></TextBox>
+                     x:Name="ParameterTextBox"
+                     Text="{Binding Path=InputValue}"
+                     ></TextBox>
             <Label Grid.Row="2">Iterations</Label>
             <TextBox Grid.Row="3"
-                     x:Name="IterationsTextBox"></TextBox>
+                     x:Name="IterationsTextBox"
+                     Text="{Binding Path=NumberOfIterations}"
+                     ></TextBox>
         </StackPanel>
 
         <StackPanel x:Name="ExecuteCancelButtonLayout"

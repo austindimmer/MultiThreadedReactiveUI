@@ -17,15 +17,13 @@ using ReactiveUI.Fody.Helpers;
 namespace MultiThreadedReactiveUI.ViewModel
 {
 
-    public class MainViewModel : ReactiveObject
+    public class MainViewModel : ReactiveObject, IMainViewModel
     {
 
         private readonly IFunctionDataProvider _DataProvider;
 
         private CancellationToken _CancellationToken { get; set; }
         private CancellationTokenSource _CancellationTokenSource { get; set; }
-
-
 
 
         public MainViewModel(IFunctionDataProvider dataProvider)
@@ -35,7 +33,6 @@ namespace MultiThreadedReactiveUI.ViewModel
             _CancellationToken = _CancellationTokenSource.Token;
             Functions = new ReactiveList<Function>();
             SelectedFunctions = new ReactiveList<Function>();
-            SelectedTask = new ReactiveList<Function>();
             TasksToExecute = new ReactiveList<ComputationTaskViewModel>();
             LoadData();
             FunctionCategories = (List<string>)Functions.CreateDerivedCollection(x => x.Category).Distinct().ToList();
@@ -53,14 +50,26 @@ namespace MultiThreadedReactiveUI.ViewModel
                         {
                             TasksToExecute.Clear();
                             TasksToExecute.AddRange(p);
+                            SelectedTask = TasksToExecute.LastOrDefault();
                         }
                     });
             AddFunctionToFunctionsToExecute.ThrownExceptions.Subscribe(
                 ex => Console.WriteLine("Error whilst adding functions! Err: {0}", ex.Message));
-            //AddFunctionToFunctionsToExecute
-            //.SubscribeOn(RxApp.TaskpoolScheduler)
-            //.ObserveOn(RxApp.MainThreadScheduler);
-            RemoveFunctionFromFunctionsToExecute = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return RemoveFunctionFromFunctionsToExecuteAsync(); });
+
+            RemoveFunctionFromFunctionsToExecute = ReactiveCommand.CreateAsyncTask<List<ComputationTaskViewModel>>(_ => { return RemoveFunctionFromFunctionsToExecuteAsync(); });
+            RemoveFunctionFromFunctionsToExecute
+        .Subscribe(p =>
+        {
+            using (TasksToExecute.SuppressChangeNotifications())
+            {
+                TasksToExecute.Clear();
+                TasksToExecute.AddRange(p);
+                SelectedTask = TasksToExecute.FirstOrDefault();
+            }
+        });
+            RemoveFunctionFromFunctionsToExecute.ThrownExceptions.Subscribe(
+                ex => Console.WriteLine("Error whilst removing functions! Err: {0}", ex.Message));
+
             RunFunctionsToExecute = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return RunFunctionsToExecuteAsync(); });
             CancelRunningFunctionsToExecute = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return CancelRunningFunctionsToExecuteAsync(); });
             CategoryFilterSelected = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return CategoryFilterSelectedAsync(SelectedCategory); });
@@ -83,6 +92,18 @@ namespace MultiThreadedReactiveUI.ViewModel
                 return updatedList;
             });
         }
+
+        private Task<List<ComputationTaskViewModel>> RemoveFunctionFromFunctionsToExecuteAsync()
+        {
+            return Task.Run(() =>
+            {
+                List<ComputationTaskViewModel> updatedList = TasksToExecute.ToList();
+                updatedList.Remove(SelectedTask);
+                return updatedList;
+            });
+        }
+
+
 
         private Task<AsyncVoid> CancelRunningFunctionsToExecuteAsync()
         {
@@ -113,13 +134,6 @@ namespace MultiThreadedReactiveUI.ViewModel
                 Functions.Add(function);
         }
 
-        private Task<AsyncVoid> RemoveFunctionFromFunctionsToExecuteAsync()
-        {
-            return Task.Run(() =>
-            {
-                return AsyncVoid.Default;
-            });
-        }
 
         private Task<AsyncVoid> RunFunctionsToExecuteAsync()
         {
@@ -160,13 +174,14 @@ namespace MultiThreadedReactiveUI.ViewModel
         public ReactiveList<ComputationTaskViewModel> TasksToExecute { get; set; }
         [Reactive]
         public int Progress { get; set; }
-        public ReactiveCommand<AsyncVoid> RemoveFunctionFromFunctionsToExecute { get; protected set; }
+        public ReactiveCommand<List<ComputationTaskViewModel>> RemoveFunctionFromFunctionsToExecute { get; protected set; }
         public ReactiveCommand<AsyncVoid> RunFunctionsToExecute { get; protected set; }
         [Reactive]
         public string SelectedCategory { get; set; }
 
         public ReactiveList<Function> SelectedFunctions { get; set; }
-        public ReactiveList<Function> SelectedTask { get; set; }
+        [Reactive]
+        public ComputationTaskViewModel SelectedTask { get; set; }
 
         public ReactiveCommand<AsyncVoid> StartAsyncCommand { get; protected set; }
         public ReactiveCommand<AsyncVoid> ToggleRunCancelCommand { get; protected set; }

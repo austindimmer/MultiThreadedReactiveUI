@@ -150,6 +150,7 @@
     <Compile Include="ViewModel\ComputationTaskViewModel.cs" />
     <Compile Include="Model\IFunction.cs" />
     <Compile Include="Model\SinFunction.cs" />
+    <Compile Include="ViewModel\IMainViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\Observable.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

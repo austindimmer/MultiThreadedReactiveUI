@@ -17,6 +17,8 @@
 
             <Controls:MetroProgressBar x:Name="ProgressBar"
                                        IsIndeterminate="{Binding Path=IsIndeterminate}"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
                                        Value="{Binding Path=Progress}"
                                        Foreground="White" />
         </StackPanel>
