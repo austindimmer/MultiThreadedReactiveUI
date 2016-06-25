@@ -3,15 +3,16 @@ using System.Threading.Tasks;
 
 namespace MultiThreadedReactiveUI.Model
 {
-    public class Function : IFunction
+    public abstract class Function : IFunction
     {
-        public string Category { get; }
+        public abstract string Category { get; }
 
 
-        public string DisplayName { get; }
+        public abstract string DisplayName { get; }
 
-        public double FunctionToRun(double parameter) {
+        public virtual double FunctionToRun(double parameter)
+        {
             return Math.Sin(parameter);
-         }
+        }
     }
 }

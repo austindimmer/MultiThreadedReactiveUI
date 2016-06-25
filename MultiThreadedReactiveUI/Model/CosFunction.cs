@@ -8,7 +8,7 @@ namespace MultiThreadedReactiveUI.Model
 {
     class CosFunction : Function
     {
-        public string Category
+        public override string Category
         {
             get
             {
@@ -16,7 +16,7 @@ namespace MultiThreadedReactiveUI.Model
             }
         }
 
-        public string DisplayName
+        public override string DisplayName
         {
             get
             {
@@ -24,7 +24,7 @@ namespace MultiThreadedReactiveUI.Model
             }
         }
 
-        public double FunctionToRun(double parameter)
+        public override double FunctionToRun(double parameter)
         {
             return Math.Cos(parameter);
         }

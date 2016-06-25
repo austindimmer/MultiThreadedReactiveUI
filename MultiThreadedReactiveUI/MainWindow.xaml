@@ -58,10 +58,11 @@
 
         <StackPanel x:Name="TasksSelectorLayout"
                     Grid.Column="2"
-                    Grid.RowSpan="2">
+                    >
             <Label Grid.Row="0">Tasks</Label>
-            <ListBox Grid.Row="1"
+            <ListBox Grid.Row="1" Grid.RowSpan="2"
                      x:Name="TasksSelectorList"
+                     MinHeight="200"
                      ItemsSource="{Binding Path=TasksToExecute}"
                      ItemTemplate="{StaticResource TaskDataTemplate}"
                      SelectionChanged="TasksSelectorList_SelectionChanged"
@@ -94,6 +95,7 @@
                     Grid.ColumnSpan="4">
             <Label>Progress Percentage</Label>
             <Controls:MetroProgressBar x:Name="ProgressBar"
+                                       Height="1"
                                        IsIndeterminate="{Binding Path=IsBusyIndeterminate}"
                                        Value="{Binding Path=Progress}"
                                        Foreground="White" />

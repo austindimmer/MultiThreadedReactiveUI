@@ -7,8 +7,24 @@ namespace MultiThreadedReactiveUI.DesignTimeData
     {
         public DesignFunction()
         {
-            //DisplayName = "Sin";
-            //Category = "Trig";
+
+        }
+
+        public override string Category
+        {
+            get
+            {
+                return "Trig";
+            }
+        }
+
+        public override string DisplayName
+        {
+            get
+            {
+                return "Sin";
+            }
+
         }
     }
 }

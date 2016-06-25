@@ -45,7 +45,21 @@ namespace MultiThreadedReactiveUI.ViewModel
 
 
             StartAsyncCommand = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return StartAsyncWork(); });
-            AddFunctionToFunctionsToExecute = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return AddFunctionToFunctionsToExecuteAsync(); });
+            AddFunctionToFunctionsToExecute = ReactiveCommand.CreateAsyncTask<List<ComputationTaskViewModel>>(_ => { return AddFunctionToFunctionsToExecuteAsync(); });
+            AddFunctionToFunctionsToExecute
+                    .Subscribe(p =>
+                    {
+                        using (TasksToExecute.SuppressChangeNotifications())
+                        {
+                            TasksToExecute.Clear();
+                            TasksToExecute.AddRange(p);
+                        }
+                    });
+            AddFunctionToFunctionsToExecute.ThrownExceptions.Subscribe(
+                ex => Console.WriteLine("Error whilst adding functions! Err: {0}", ex.Message));
+            //AddFunctionToFunctionsToExecute
+            //.SubscribeOn(RxApp.TaskpoolScheduler)
+            //.ObserveOn(RxApp.MainThreadScheduler);
             RemoveFunctionFromFunctionsToExecute = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return RemoveFunctionFromFunctionsToExecuteAsync(); });
             RunFunctionsToExecute = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return RunFunctionsToExecuteAsync(); });
             CancelRunningFunctionsToExecute = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return CancelRunningFunctionsToExecuteAsync(); });
@@ -53,24 +67,20 @@ namespace MultiThreadedReactiveUI.ViewModel
 
         }
 
-        private Task<AsyncVoid> AddFunctionToFunctionsToExecuteAsync()
+
+        private Task<List<ComputationTaskViewModel>> AddFunctionToFunctionsToExecuteAsync()
         {
             return Task.Run(() =>
             {
-                try
+                List<ComputationTaskViewModel> updatedList = TasksToExecute.ToList();
+                foreach (var function in SelectedFunctions)
                 {
-                    foreach (var function in SelectedFunctions)
-                    {
-                        ComputationTaskViewModel viewModel = new ComputationTaskViewModel((x,y) => function.FunctionToRun(1));
-                        TasksToExecute.Add(viewModel);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.Write(ex.Message);
+                    ComputationTaskViewModel viewModel = new ComputationTaskViewModel((x, y) => function.FunctionToRun(1));
+                    viewModel.DisplayName = function.DisplayName;
+                    updatedList.Add(viewModel);
                 }
 
-                return AsyncVoid.Default;
+                return updatedList;
             });
         }
 
@@ -78,15 +88,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         {
             return Task.Run(() =>
             {
-                try
-                {
-                    _CancellationTokenSource.Cancel();
-                }
-                catch (Exception ex)
-                {
-                    Debug.Write(ex.Message);
-                }
-
+                _CancellationTokenSource.Cancel();
                 return AsyncVoid.Default;
             });
         }
@@ -96,13 +98,6 @@ namespace MultiThreadedReactiveUI.ViewModel
         {
             return Task.Run(() =>
             {
-                try
-                {
-                }
-                catch (Exception ex)
-                {
-                    Debug.Write(ex.Message);
-                }
 
                 return AsyncVoid.Default;
             });
@@ -122,14 +117,6 @@ namespace MultiThreadedReactiveUI.ViewModel
         {
             return Task.Run(() =>
             {
-                try
-                {
-                }
-                catch (Exception ex)
-                {
-                    Debug.Write(ex.Message);
-                }
-
                 return AsyncVoid.Default;
             });
         }
@@ -138,14 +125,6 @@ namespace MultiThreadedReactiveUI.ViewModel
         {
             return Task.Run(() =>
             {
-                try
-                {
-                }
-                catch (Exception ex)
-                {
-                    Debug.Write(ex.Message);
-                }
-
                 return AsyncVoid.Default;
             });
         }
@@ -157,8 +136,8 @@ namespace MultiThreadedReactiveUI.ViewModel
                 Progress = 0;
                 while (Progress <= 100)
                 {
-                    Progress += 10;
-                    Thread.Sleep(100);
+                    Progress += 1;
+                    Thread.Sleep(50);
                 }
 
                 return AsyncVoid.Default;
@@ -166,7 +145,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         }
 
 
-        public ReactiveCommand<AsyncVoid> AddFunctionToFunctionsToExecute { get; protected set; }
+        public ReactiveCommand<List<ComputationTaskViewModel>> AddFunctionToFunctionsToExecute { get; protected set; }
         public ReactiveCommand<AsyncVoid> CancelRunningFunctionsToExecute { get; protected set; }
         public ReactiveCommand<AsyncVoid> CategoryFilterSelected { get; protected set; }
         [Reactive]
@@ -175,8 +154,9 @@ namespace MultiThreadedReactiveUI.ViewModel
         public List<string> FunctionCategories { get; set; }
 
 
-
+        [Reactive]
         public ReactiveList<Function> Functions { get; set; }
+        [Reactive]
         public ReactiveList<ComputationTaskViewModel> TasksToExecute { get; set; }
         [Reactive]
         public int Progress { get; set; }
