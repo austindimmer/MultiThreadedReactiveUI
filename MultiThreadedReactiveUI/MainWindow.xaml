@@ -8,6 +8,8 @@
                        mc:Ignorable="d"
                        d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainViewModel}"
                        Title="Austin Dimmer">
+    
+
     <Grid x:Name="LayoutRoot">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.3*"></ColumnDefinition>
@@ -25,21 +27,20 @@
         <StackPanel x:Name="FunctionCategoriesLayout"
                     Grid.Row="0">
             <Label>Function Category</Label>
-            <ComboBox x:Name="FunctionCategorySelector" ItemsSource="{Binding Path=FunctionCategories}"
-                       SelectedItem="{Binding Path=SelectedCategory}" SelectionChanged="FunctionCategorySelector_SelectionChanged"></ComboBox>
+            <ComboBox x:Name="FunctionCategorySelector"
+                      ItemsSource="{Binding Path=FunctionCategories}"
+                      SelectedItem="{Binding Path=SelectedCategory}"
+                      SelectionChanged="FunctionCategorySelector_SelectionChanged"></ComboBox>
         </StackPanel>
 
         <StackPanel x:Name="FunctionsSelectorLayout"
                     Grid.Row="1">
             <Label>Functions</Label>
             <ListBox x:Name="FunctionsSelectorList"
-                     Height="Auto"
-                     MinHeight="75"
                      ItemsSource="{Binding Path=Functions}"
                      ItemTemplate="{StaticResource FunctionDataTemplate}"
                      SelectionChanged="FunctionsSelectorList_SelectionChanged"
-                     SelectionMode="Extended"
-                     ></ListBox>
+                     SelectionMode="Extended"></ListBox>
         </StackPanel>
 
 
@@ -61,17 +62,15 @@
             <Label Grid.Row="0">Tasks</Label>
             <ListBox Grid.Row="1"
                      x:Name="TasksSelectorList"
-                     Height="Auto"
-                     MinHeight="75"
-                     ItemsSource="{Binding Path=SelectedFunctions}"
-                     ItemTemplate="{StaticResource FunctionDataTemplate}"
+                     ItemsSource="{Binding Path=TasksToExecute}"
+                     ItemTemplate="{StaticResource TaskDataTemplate}"
                      SelectionChanged="TasksSelectorList_SelectionChanged"
-                     SelectionMode="Extended"
-                     ></ListBox>
+                     SelectionMode="Extended"></ListBox>
         </StackPanel>
 
         <StackPanel x:Name="VariablesLayout"
-                    Grid.Column="4" Grid.RowSpan="2">
+                    Grid.Column="4"
+                    Grid.RowSpan="2">
             <Label Grid.Row="0">Parameter</Label>
             <TextBox Grid.Row="1"
                      x:Name="ParameterTextBox"></TextBox>
@@ -85,8 +84,8 @@
                     Grid.Column="3">
             <!--<Button Content="{Binding Path=ExecutionLabel}"
                     Style="{StaticResource AccentedSquareButtonStyle}"></Button>-->
-                        <Button Content="Execute All Functions"
-                                Command="{Binding Path=StartAsyncCommand}"
+            <Button Content="Execute All Functions"
+                    Command="{Binding Path=StartAsyncCommand}"
                     Style="{StaticResource AccentedSquareButtonStyle}"></Button>
         </StackPanel>
 

@@ -45,9 +45,6 @@ namespace MultiThreadedReactiveUI
         private static void EnsureXamlResources(Application app)
         {
 
-            
-
-
             var mahAppsControls = new ResourceDictionary();
             var mahAppsFonts = new ResourceDictionary();
             var mahAppsColors = new ResourceDictionary();

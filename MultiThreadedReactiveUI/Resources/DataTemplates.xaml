@@ -1,17 +1,27 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:MultiThreadedReactiveUI.Resources">
-    
-    	<DataTemplate x:Key="FunctionDataTemplate">
-		<StackPanel Orientation="Vertical">
-			<TextBlock Text="{Binding DisplayName}"
-						   FontWeight="SemiBold"
-						   Foreground="{StaticResource IdealForegroundColorBrush}" />
-			<!--<TextBlock Text="{Binding Category}"
+
+    <DataTemplate x:Key="FunctionDataTemplate">
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="{Binding DisplayName}"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource IdealForegroundColorBrush}"
+                       Background="{StaticResource AccentColorBrush}"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TaskDataTemplate">
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="{Binding DisplayName}"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource IdealForegroundColorBrush}" />
+        </StackPanel>
+    </DataTemplate>
+
+
+</ResourceDictionary>
+
+<!--<TextBlock Text="{Binding Category}"
 						   FontWeight="Light"
 						   Foreground="{StaticResource AccentColorBrush2}" />-->
-		</StackPanel>
-	</DataTemplate>
-    
-    
-</ResourceDictionary>
