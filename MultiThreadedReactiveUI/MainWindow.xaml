@@ -8,7 +8,7 @@
                        mc:Ignorable="d"
                        d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainViewModel}"
                        Title="Austin Dimmer">
-    
+
 
     <Grid x:Name="LayoutRoot">
         <Grid.ColumnDefinitions>
@@ -18,8 +18,8 @@
             <ColumnDefinition Width="0.3*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.2*"></RowDefinition>
-            <RowDefinition Height="0.6*"></RowDefinition>
+            <RowDefinition Height="0.15*"></RowDefinition>
+            <RowDefinition Height="0.65*"></RowDefinition>
             <RowDefinition Height="0.1*"></RowDefinition>
             <RowDefinition Height="0.1*"></RowDefinition>
         </Grid.RowDefinitions>
@@ -33,15 +33,23 @@
                       SelectionChanged="FunctionCategorySelector_SelectionChanged"></ComboBox>
         </StackPanel>
 
-        <StackPanel x:Name="FunctionsSelectorLayout"
+        <Grid x:Name="FunctionsSelectorLayout"
                     Grid.Row="1">
-            <Label>Functions</Label>
+                        <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.1*"></RowDefinition>
+                <RowDefinition Height="0.9*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0">Functions</Label>
             <ListBox x:Name="FunctionsSelectorList"
+                     Grid.Row="1"
                      ItemsSource="{Binding Path=Functions}"
                      ItemTemplate="{StaticResource FunctionDataTemplate}"
                      SelectionChanged="FunctionsSelectorList_SelectionChanged"
                      SelectionMode="Extended"></ListBox>
-        </StackPanel>
+        </Grid>
 
 
         <StackPanel x:Name="SelectorButtonsLayout"
@@ -56,34 +64,37 @@
         </StackPanel>
 
 
-        <StackPanel x:Name="TasksSelectorLayout"
-                    Grid.Column="2"
-                    Grid.RowSpan="2"
-                    >
+        <Grid x:Name="TasksSelectorLayout"
+              Grid.Column="2"
+              Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.1*"></RowDefinition>
+                <RowDefinition Height="0.9*"></RowDefinition>
+            </Grid.RowDefinitions>
             <Label Grid.Row="0">Tasks</Label>
-            <ListBox Grid.Row="1" 
+            <ListBox Grid.Row="1"
                      x:Name="TasksSelectorList"
                      ItemsSource="{Binding Path=TasksToExecute}"
                      ItemTemplate="{StaticResource TaskDataTemplate}"
                      SelectionChanged="TasksSelectorList_SelectionChanged"
                      SelectionMode="Single"></ListBox>
-        </StackPanel>
+        </Grid>
 
         <StackPanel x:Name="VariablesLayout"
                     Grid.Column="4"
                     Grid.RowSpan="2"
-                    DataContext="{Binding Path=SelectedTask}"
-                    >
+                    DataContext="{Binding Path=SelectedTask}">
             <Label Grid.Row="0">Parameter</Label>
             <TextBox Grid.Row="1"
                      x:Name="ParameterTextBox"
-                     Text="{Binding Path=InputValue}"
-                     ></TextBox>
+                     Text="{Binding Path=InputValue}"></TextBox>
             <Label Grid.Row="2">Iterations</Label>
             <TextBox Grid.Row="3"
                      x:Name="IterationsTextBox"
-                     Text="{Binding Path=NumberOfIterations}"
-                     ></TextBox>
+                     Text="{Binding Path=NumberOfIterations}"></TextBox>
         </StackPanel>
 
         <StackPanel x:Name="ExecuteCancelButtonLayout"
@@ -104,7 +115,7 @@
                                        Height="1"
                                        IsIndeterminate="{Binding Path=IsBusyIndeterminate}"
                                        Value="{Binding Path=Progress}"
-                                       Foreground="White" />
+                                       Foreground="{StaticResource AccentColorBrushNavy}" />
 
 
         </StackPanel>
