@@ -65,7 +65,7 @@
                      ItemsSource="{Binding Path=TasksToExecute}"
                      ItemTemplate="{StaticResource TaskDataTemplate}"
                      SelectionChanged="TasksSelectorList_SelectionChanged"
-                     SelectionMode="Extended"></ListBox>
+                     SelectionMode="Single"></ListBox>
         </StackPanel>
 
         <StackPanel x:Name="VariablesLayout"

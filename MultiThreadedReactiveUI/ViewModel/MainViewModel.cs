@@ -35,8 +35,8 @@ namespace MultiThreadedReactiveUI.ViewModel
             _CancellationToken = _CancellationTokenSource.Token;
             Functions = new ReactiveList<Function>();
             SelectedFunctions = new ReactiveList<Function>();
-            SelectedTasks = new ReactiveList<Function>();
-            FunctionsToExecute = new ReactiveList<Function>();
+            SelectedTask = new ReactiveList<Function>();
+            TasksToExecute = new ReactiveList<ComputationTaskViewModel>();
             LoadData();
             FunctionCategories = (List<string>)Functions.CreateDerivedCollection(x => x.Category).Distinct().ToList();
             //LoadedLocalGrammars = (ReactiveList<SapiGrammarComId>)LoadedSapiGrammars.Values.CreateDerivedCollection(x => x, x => x.IsGlobal == false, (l, r) => l.GrammarName.CompareTo(r.GrammarName));
@@ -59,7 +59,11 @@ namespace MultiThreadedReactiveUI.ViewModel
             {
                 try
                 {
-                    FunctionsToExecute.AddRange(SelectedFunctions);
+                    foreach (var function in SelectedFunctions)
+                    {
+                        ComputationTaskViewModel viewModel = new ComputationTaskViewModel((x,y) => function.FunctionToRun(1));
+                        TasksToExecute.Add(viewModel);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -94,7 +98,6 @@ namespace MultiThreadedReactiveUI.ViewModel
             {
                 try
                 {
-                    FunctionsToExecute.AddRange(SelectedFunctions);
                 }
                 catch (Exception ex)
                 {
@@ -121,7 +124,6 @@ namespace MultiThreadedReactiveUI.ViewModel
             {
                 try
                 {
-                    FunctionsToExecute.AddRange(SelectedFunctions);
                 }
                 catch (Exception ex)
                 {
@@ -138,7 +140,6 @@ namespace MultiThreadedReactiveUI.ViewModel
             {
                 try
                 {
-                    FunctionsToExecute.AddRange(SelectedFunctions);
                 }
                 catch (Exception ex)
                 {
@@ -176,7 +177,7 @@ namespace MultiThreadedReactiveUI.ViewModel
 
 
         public ReactiveList<Function> Functions { get; set; }
-        public ReactiveList<Function> FunctionsToExecute { get; set; }
+        public ReactiveList<ComputationTaskViewModel> TasksToExecute { get; set; }
         [Reactive]
         public int Progress { get; set; }
         public ReactiveCommand<AsyncVoid> RemoveFunctionFromFunctionsToExecute { get; protected set; }
@@ -185,7 +186,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         public string SelectedCategory { get; set; }
 
         public ReactiveList<Function> SelectedFunctions { get; set; }
-        public ReactiveList<Function> SelectedTasks { get; set; }
+        public ReactiveList<Function> SelectedTask { get; set; }
 
         public ReactiveCommand<AsyncVoid> StartAsyncCommand { get; protected set; }
         public ReactiveCommand<AsyncVoid> ToggleRunCancelCommand { get; protected set; }

@@ -2,17 +2,28 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:MultiThreadedReactiveUI.Resources.Styles">
 
+    <Style TargetType="Label">
+        <Setter Property="Foreground"
+                Value="{StaticResource ResourceKey=IdealForegroundColorBrush}"></Setter>
+        <Setter Property="FontWeight"
+                Value="Bold"></Setter>
+        <Setter Property="FontFamily"
+                Value="SegoeUI"></Setter>
+        <Setter Property="Margin"
+                Value="1,4,4,4"></Setter>
+    </Style>
+
     <Style TargetType="{x:Type StackPanel}">
         <Setter Property="Margin"
                 Value="7"></Setter>
     </Style>
 
-    <Style TargetType="{x:Type ListBox}">
+    <!--<Style TargetType="{x:Type ListBox}">
         <Setter Property="Height"
                 Value="Auto"></Setter>
         <Setter Property="MinHeight"
                 Value="75"></Setter>
-    </Style>
+    </Style>-->
 
     <Style TargetType="{x:Type Button}">
         <Setter Property="MinHeight"
@@ -27,16 +38,8 @@
                 Value="SegoeUI"></Setter>
     </Style>
 
-    <Style TargetType="Label">
-        <Setter Property="Foreground"
-                Value="{StaticResource ResourceKey=IdealForegroundColorBrush}"></Setter>
-        <Setter Property="FontWeight"
-                Value="Bold"></Setter>
-        <Setter Property="FontFamily"
-                Value="SegoeUI"></Setter>
-        <Setter Property="Margin"
-                Value="1,4,4,4"></Setter>
-    </Style>
+
+
 
     <Style x:Key="ButtonStyle"
            TargetType="{x:Type Button}">

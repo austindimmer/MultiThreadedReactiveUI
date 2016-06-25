@@ -56,11 +56,11 @@ namespace MultiThreadedReactiveUI
         private void TasksSelectorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListBox lb = sender as ListBox;
-            _MainViewModel.SelectedTasks.Clear();
+            _MainViewModel.SelectedTask.Clear();
             foreach (var selectedItem in lb.SelectedItems)
             {
                 Function func = selectedItem as Function;
-                _MainViewModel.SelectedTasks.Add(func);
+                _MainViewModel.SelectedTask.Add(func);
             }
         }
     }

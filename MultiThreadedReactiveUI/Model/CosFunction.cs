@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MultiThreadedReactiveUI.Model
 {
-    class SinFunction : Function
+    class CosFunction : Function
     {
         public string Category
         {
@@ -20,13 +20,13 @@ namespace MultiThreadedReactiveUI.Model
         {
             get
             {
-                return Constants.FuncitonSin;
+                return Constants.FuncitonCos;
             }
         }
 
         public double FunctionToRun(double parameter)
         {
-            return Math.Sin(parameter);
+            return Math.Cos(parameter);
         }
     }
 }

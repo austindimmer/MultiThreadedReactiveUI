@@ -8,7 +8,9 @@ namespace MultiThreadedReactiveUI.Model
 {
     interface IFunction
     {
-        string DisplayName { get; set; }
-        string Category { get; set; }
+        string DisplayName { get; }
+        string Category { get; }
+
+        double FunctionToRun(double parameter);
     }
 }

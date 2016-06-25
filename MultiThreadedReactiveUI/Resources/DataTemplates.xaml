@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:MultiThreadedReactiveUI.Resources">
+                    xmlns:local="clr-namespace:MultiThreadedReactiveUI.Resources"
+                    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls">
 
     <DataTemplate x:Key="FunctionDataTemplate">
         <StackPanel Orientation="Vertical">
@@ -16,6 +17,11 @@
             <TextBlock Text="{Binding DisplayName}"
                        FontWeight="SemiBold"
                        Foreground="{StaticResource IdealForegroundColorBrush}" />
+            
+                      <Controls:MetroProgressBar x:Name="ProgressBar"
+                                       IsIndeterminate="{Binding Path=IsIndeterminate}"
+                                       Value="{Binding Path=Progress}"
+                                       Foreground="White" />
         </StackPanel>
     </DataTemplate>
 

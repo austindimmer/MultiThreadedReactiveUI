@@ -7,8 +7,8 @@ namespace MultiThreadedReactiveUI.DesignTimeData
     {
         public DesignFunction()
         {
-            DisplayName = "Sin";
-            Category = "Trig";
+            //DisplayName = "Sin";
+            //Category = "Trig";
         }
     }
 }

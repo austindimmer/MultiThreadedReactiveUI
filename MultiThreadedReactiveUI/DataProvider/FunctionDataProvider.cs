@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MultiThreadedReactiveUI.DataProvider;
+using MultiThreadedReactiveUI.Model;
 
 namespace MultiThreadedReactiveUI.DataProvider
 {
@@ -7,15 +8,11 @@ namespace MultiThreadedReactiveUI.DataProvider
     {
         public IEnumerable<Model.Function> LoadFunctions()
         {
-            return new List<Model.Function>
-            {
-                new Model.Function {DisplayName = "Sin", Category = "Trig"},
-                new Model.Function {DisplayName = "Cos", Category = "Trig"},
-                new Model.Function {DisplayName = "Tan", Category = "Trig" },
-                new Model.Function {DisplayName = "Ln", Category = "General"},
-                new Model.Function {DisplayName = "Sort", Category = "General" },
-                new Model.Function {DisplayName = "Rnd", Category = "Special"},
-            };
+            List<Function> functionsToReturn = new List<Function>();
+            functionsToReturn.Add(new SinFunction());
+            functionsToReturn.Add(new CosFunction());
+            return functionsToReturn;
+
         }
     }
 }
