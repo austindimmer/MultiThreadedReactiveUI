@@ -26,12 +26,14 @@ namespace MultiThreadedReactiveUI.ViewModel
         int CurrentLoopCounter;
         public IContainer Container { get; set; }
 
+
+
         public MainViewModel(IFunctionDataProvider dataProvider, IContainer container)
         {
+            
             _DataProvider = dataProvider;
             Container = container;
             CancellationTokenSource = new CancellationTokenSource();
-            CancellationToken = CancellationTokenSource.Token;
             SelectedFunctions = new ReactiveList<Function>();
             TasksToExecute = new ReactiveList<ComputationTaskViewModel>();
             ResetFunctionsData();
@@ -71,7 +73,15 @@ namespace MultiThreadedReactiveUI.ViewModel
                 ex => Console.WriteLine("Error whilst removing functions! Err: {0}", ex.Message));
 
             RunFunctionsToExecute = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return RunFunctionsToExecuteAsync(); });
+            RunFunctionsToExecute.ThrownExceptions.Subscribe(
+                ex => Console.WriteLine("Error whilst running functions! Err: {0}", ex.Message));
+
+
             CancelRunningFunctionsToExecute = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return CancelRunningFunctionsToExecuteAsync(); });
+            CancelRunningFunctionsToExecute.ThrownExceptions.Subscribe(
+                ex => Console.WriteLine("Error whilst cancelling running functions! Err: {0}", ex.Message));
+
+
             CategoryFilterSelected = ReactiveCommand.CreateAsyncTask<IEnumerable<Function>>(_ => { return CategoryFilterSelectedAsync(); });
             CategoryFilterSelected
                     .Subscribe(p =>
@@ -92,7 +102,7 @@ namespace MultiThreadedReactiveUI.ViewModel
                     ex => Console.WriteLine("Error whilst filtering Categories! Err: {0}", ex.Message));
 
             SetupCancelRunViewModels();
-
+            SetComputationViewModelBusyIndicator(false);
 
         }
 
@@ -118,51 +128,25 @@ namespace MultiThreadedReactiveUI.ViewModel
         {
             return Task.Run(() =>
             {
-                CancellationTokenSource.Cancel();
-                ToggleRunCancelCommand();
+
+                try
+                {
+                    CancellationTokenSource.Cancel();
+                }
+                catch (OperationCanceledException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    ToggleRunCancelCommand();
+                    SetComputationViewModelBusyIndicator(false);
+                    CancellationTokenSource.Dispose();
+                }
                 return AsyncVoid.Default;
             });
         }
 
-        private void ExecuteFunctionLoop(ComputationTaskViewModel computationTaskViewModel)
-        {
-
-            // set cancel on the token somewhere in the workers to make the loop stop
-
-
-            int[] nums = Enumerable.Range(0, computationTaskViewModel.NumberOfIterations).ToArray();
-            CancellationTokenSource cts = new CancellationTokenSource();
-
-            // Use ParallelOptions instance to store the CancellationToken
-            ParallelOptions po = new ParallelOptions();
-            po.CancellationToken = cts.Token;
-            po.MaxDegreeOfParallelism = System.Environment.ProcessorCount;
-
-
-            try
-            {
-                Parallel.ForEach(nums, po, (num) =>
-                {
-
-                    //double d = Math.Sqrt(num);
-                    double d = computationTaskViewModel.FunctionToRun.Invoke(computationTaskViewModel.InputValue);
-                    Console.WriteLine("{0} on {1}", d, Thread.CurrentThread.ManagedThreadId);
-                    po.CancellationToken.ThrowIfCancellationRequested();
-                    Interlocked.Increment(ref this.CurrentLoopCounter);
-                    var currentProgress = (CurrentLoopCounter / nums.Length) * 100;
-                    computationTaskViewModel.Progress = currentProgress;
-
-                });
-            }
-            catch (OperationCanceledException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            finally
-            {
-                cts.Dispose();
-            }
-        }
 
         private Task<List<ComputationTaskViewModel>> RemoveFunctionFromFunctionsToExecuteAsync()
         {
@@ -192,13 +176,11 @@ namespace MultiThreadedReactiveUI.ViewModel
 
         private void RunFuncitonsToExecuteInSeperateThreads()
         {
-            CancellationTokenSource cts = new CancellationTokenSource();
+            CancellationTokenSource = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
-            po.CancellationToken = cts.Token;
+            po.CancellationToken = CancellationTokenSource.Token;
             po.MaxDegreeOfParallelism = System.Environment.ProcessorCount;
 
-
-            var data = TasksToExecute.ToList();
             try
             {
                 Parallel.ForEach(TasksToExecute, po, computationTaskViewModel =>
@@ -218,10 +200,7 @@ namespace MultiThreadedReactiveUI.ViewModel
             {
                 Console.WriteLine(e.Message);
             }
-            finally
-            {
-                cts.Dispose();
-            }
+
         }
 
         /// <summary>
@@ -233,21 +212,31 @@ namespace MultiThreadedReactiveUI.ViewModel
             ToggleRunCancelCommand();
             //Calculate total iterations to perform at start of work
             TotalIterationsForAllTasks = TasksToExecute.Select(x => x.NumberOfIterations).Sum();
-            //Set all tasks to indeterminate first
-            foreach (var computationTaskViewModel in TasksToExecute)
-                computationTaskViewModel.IsIndeterminate = true;
+            SetComputationViewModelBusyIndicator(true);
             return Task.Run(() =>
             {
-                //foreach (var computationTaskViewModel in TasksToExecute)
-                //{
-                //    ExecuteFunctionLoop(computationTaskViewModel);
-                //}
-                // Use ParallelOptions instance to store the CancellationToken
                 RunFuncitonsToExecuteInSeperateThreads();
 
                 return AsyncVoid.Default;
 
             });
+        }
+
+        private void SetComputationViewModelBusyIndicator(bool value)
+        {
+            Application.Current.Dispatcher.InvokeIfRequired(() =>
+               {
+                   if (value == false)
+                   {
+                       IsBusy = true ;
+                   }
+                   if (value == true) {
+                       IsBusy = false ;
+                   }
+                   foreach (var computationTaskViewModel in TasksToExecute)
+                       computationTaskViewModel.IsIndeterminate = value;
+               }, Container);
+
         }
 
         private void SetupCancelRunViewModels()
@@ -265,21 +254,21 @@ namespace MultiThreadedReactiveUI.ViewModel
 
         private void ToggleRunCancelCommand()
         {
-            //Dispatcher.CurrentDispatcher.InvokeIfRequired(() => GrammarViewModel.Grammars.Clear(), Facade.Container);
-            Application.Current.Dispatcher.InvokeIfRequired(() => {
+            Application.Current.Dispatcher.InvokeIfRequired(() =>
+            {
                 bool hasToggled = false;
-                if (CurrentCancelRunViewModel.DisplayText == Constants.RunButtonDisplayText) {
+                if (CurrentCancelRunViewModel.DisplayText == Constants.RunButtonDisplayText)
+                {
                     CurrentCancelRunViewModel = CancelRunViewModelCancel;
                     hasToggled = true;
                 }
-                if (CurrentCancelRunViewModel.DisplayText == Constants.CancelButtonDisplayText && hasToggled==false )
+                if (CurrentCancelRunViewModel.DisplayText == Constants.CancelButtonDisplayText && hasToggled == false)
                 {
                     CurrentCancelRunViewModel = CancelRunViewModelRun;
                 }
             }, Container);
         }
 
-        private CancellationToken CancellationToken { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
 
         public Task<IEnumerable<Function>> CategoryFilterSelectedAsync()
@@ -309,6 +298,9 @@ namespace MultiThreadedReactiveUI.ViewModel
 
         public ReactiveCommand<List<ComputationTaskViewModel>> AddFunctionToFunctionsToExecute { get; protected set; }
         public ReactiveCommand<AsyncVoid> CancelRunningFunctionsToExecute { get; protected set; }
+        [Reactive]
+        public bool IsBusy { get; set; }
+
         [Reactive]
         public CancelRunViewModel CancelRunViewModelCancel { get; set; }
         [Reactive]

@@ -49,7 +49,6 @@ namespace MultiThreadedReactiveUI
             //Setup two way binding with ViewModel
             this.Bind(ViewModel, x => x.SelectedTask, x => x.TasksSelectorList.SelectedItem);
             this.Bind(ViewModel, x => x.SelectedCategory, x => x.FunctionCategorySelector.SelectedValue);
-            //this.Bind(ViewModel, x => x.CurrentCancelRunViewModel, x => x.RunCancelButton.DataContext);
 
             this.WhenActivated(d =>
                 {
@@ -76,12 +75,6 @@ namespace MultiThreadedReactiveUI
 
         }
 
-        //private void FunctionCategorySelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    ComboBox combo = sender as ComboBox;
-        //    var selectedItem = combo.SelectedValue.ToString();
-        //    ViewModel.SelectedCategory = selectedItem;
-        //}
 
     }
 }

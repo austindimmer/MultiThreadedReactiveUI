@@ -146,6 +146,9 @@
     </ApplicationDefinition>
     <Compile Include="DispatcherExtensions.cs" />
     <Compile Include="Model\Constants.cs" />
+    <Compile Include="Model\RndFunction.cs" />
+    <Compile Include="Model\SqrtFunction.cs" />
+    <Compile Include="Model\TanFunction.cs" />
     <Compile Include="Model\LnFunction.cs" />
     <Compile Include="Model\CosFunction.cs" />
     <Compile Include="ViewModel\AsyncVoid.cs" />
@@ -175,14 +178,13 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Properties\DesignTimeResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\DataTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\DesignTimeResources.xaml" Condition="'$(DesignTime)'=='true' &#xD;&#xA;	  OR ('$(SolutionPath)'!='' &#xD;&#xA;	  AND Exists('$(SolutionPath)') AND '$(BuildingInsideVisualStudio)'!='true' &#xD;&#xA;	  AND '$(BuildingInsideExpressionBlend)'!='true')">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <ContainsDesignTimeResources>true</ContainsDesignTimeResources>
     </Page>
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>

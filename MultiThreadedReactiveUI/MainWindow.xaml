@@ -28,13 +28,12 @@
                     Grid.Row="0">
             <Label>Function Category</Label>
             <ComboBox x:Name="FunctionCategorySelector"
-                      ItemsSource="{Binding Path=FunctionCategories}"
-                      ></ComboBox>
+                      ItemsSource="{Binding Path=FunctionCategories}" IsEnabled="{Binding Path=IsBusy}"></ComboBox>
         </StackPanel>
 
         <Grid x:Name="FunctionsSelectorLayout"
-                    Grid.Row="1">
-                        <Grid.ColumnDefinitions>
+              Grid.Row="1">
+            <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -44,6 +43,7 @@
             <Label Grid.Row="0">Functions</Label>
             <ListBox x:Name="FunctionsSelectorList"
                      Grid.Row="1"
+                     IsEnabled="{Binding Path=IsBusy}"
                      ItemsSource="{Binding Path=Functions, Mode=TwoWay}"
                      ItemTemplate="{StaticResource FunctionDataTemplate}"
                      SelectionChanged="FunctionsSelectorList_SelectionChanged"
@@ -56,10 +56,12 @@
                     Grid.Column="1">
             <Button Grid.Row="0"
                     Content="&gt;&gt;"
-                    Command="{Binding Path=AddFunctionToFunctionsToExecute}"></Button>
+                    Command="{Binding Path=AddFunctionToFunctionsToExecute}"
+                    IsEnabled="{Binding Path=IsBusy}"></Button>
             <Button Grid.Row="1"
                     Content="&lt;&lt;"
-                    Command="{Binding Path=RemoveFunctionFromFunctionsToExecute}"></Button>
+                    Command="{Binding Path=RemoveFunctionFromFunctionsToExecute}"
+                    IsEnabled="{Binding Path=IsBusy}"></Button>
         </StackPanel>
 
 
@@ -76,6 +78,7 @@
             <Label Grid.Row="0">Tasks</Label>
             <ListBox Grid.Row="1"
                      x:Name="TasksSelectorList"
+                     IsEnabled="{Binding Path=IsBusy}"
                      ItemsSource="{Binding Path=TasksToExecute}"
                      ItemTemplate="{StaticResource TaskDataTemplate}"
                      SelectionMode="Single"></ListBox>
@@ -84,11 +87,13 @@
         <StackPanel x:Name="VariablesLayout"
                     Grid.Column="4"
                     Grid.RowSpan="2"
-                    DataContext="{Binding Path=SelectedTask}">
+                    DataContext="{Binding Path=SelectedTask}"
+                    >
             <Label Grid.Row="0">Parameter</Label>
             <TextBox Grid.Row="1"
                      x:Name="ParameterTextBox"
-                     Text="{Binding Path=InputValue}"></TextBox>
+                     Text="{Binding Path=InputValue}"
+                     ></TextBox>
             <Label Grid.Row="2">Iterations</Label>
             <TextBox Grid.Row="3"
                      x:Name="IterationsTextBox"

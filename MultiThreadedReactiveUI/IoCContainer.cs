@@ -39,7 +39,7 @@ namespace MultiThreadedReactiveUI
                 .SingleInstance();
 
             /* By registering the UI thread dispatcher 
-* we are able to invoke controls from anywhere. */
+* we are able to invoke controls from anywhere. If it is registered early during app lifecycle the Dispatcher object is pretty much guaranteed to be the safe UI Dispatcher*/
 
             var dispatcher = Application.Current.Dispatcher;
             var dispatcher2 = Dispatcher.CurrentDispatcher;

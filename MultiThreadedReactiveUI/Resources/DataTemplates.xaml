@@ -11,26 +11,32 @@
     </DataTemplate>
 
     <DataTemplate x:Key="TaskDataTemplate">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding DisplayName}"
-                       FontWeight="SemiBold" 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.9*"></RowDefinition>
+                <RowDefinition Height="0.1*"></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <TextBlock 
+                Grid.Row="0"
+                Text="{Binding DisplayName}"
+                       FontWeight="SemiBold"
                        HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-                       />
+                       VerticalAlignment="Stretch" />
 
             <Controls:MetroProgressBar x:Name="ProgressBar"
+                                       Grid.Row="1"
                                        IsIndeterminate="{Binding Path=IsIndeterminate}"
-                                       
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"
                                        Value="{Binding Path=Progress}"
                                        Foreground="{StaticResource AccentColorBrushNavy}" />
-        </StackPanel>
+        </Grid>
     </DataTemplate>
 
 
 </ResourceDictionary>
 
-<!--<TextBlock Text="{Binding Category}"
-						   FontWeight="Light"
-						   Foreground="{StaticResource AccentColorBrush2}" />-->
