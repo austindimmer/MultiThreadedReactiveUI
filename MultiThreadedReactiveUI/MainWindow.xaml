@@ -29,8 +29,7 @@
             <Label>Function Category</Label>
             <ComboBox x:Name="FunctionCategorySelector"
                       ItemsSource="{Binding Path=FunctionCategories}"
-                      SelectedItem="{Binding Path=SelectedCategory}"
-                      SelectionChanged="FunctionCategorySelector_SelectionChanged"></ComboBox>
+                      ></ComboBox>
         </StackPanel>
 
         <Grid x:Name="FunctionsSelectorLayout"
@@ -45,7 +44,7 @@
             <Label Grid.Row="0">Functions</Label>
             <ListBox x:Name="FunctionsSelectorList"
                      Grid.Row="1"
-                     ItemsSource="{Binding Path=Functions}"
+                     ItemsSource="{Binding Path=Functions, Mode=TwoWay}"
                      ItemTemplate="{StaticResource FunctionDataTemplate}"
                      SelectionChanged="FunctionsSelectorList_SelectionChanged"
                      SelectionMode="Extended"></ListBox>
@@ -79,7 +78,6 @@
                      x:Name="TasksSelectorList"
                      ItemsSource="{Binding Path=TasksToExecute}"
                      ItemTemplate="{StaticResource TaskDataTemplate}"
-                     SelectionChanged="TasksSelectorList_SelectionChanged"
                      SelectionMode="Single"></ListBox>
         </Grid>
 

@@ -12,6 +12,7 @@ namespace MultiThreadedReactiveUI.Model
         public static string CategoryTrig = "Trig";
         public static string CategorySpecial = "Special";
         public static string CategoryGeneral = "General";
+        public static string CategoryAll = "All Categories";
 
         public static string FuncitonSin = "Sin";
         public static string FuncitonCos = "Cos";

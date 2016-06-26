@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MultiThreadedReactiveUI.Model;
 using ReactiveUI;
+using System.Threading.Tasks;
 
 namespace MultiThreadedReactiveUI.ViewModel
 {
@@ -8,7 +9,7 @@ namespace MultiThreadedReactiveUI.ViewModel
     {
         ReactiveCommand<List<ComputationTaskViewModel>> AddFunctionToFunctionsToExecute { get; }
         ReactiveCommand<AsyncVoid> CancelRunningFunctionsToExecute { get; }
-        ReactiveCommand<AsyncVoid> CategoryFilterSelected { get; }
+        ReactiveCommand<IEnumerable<Function>> CategoryFilterSelected { get; }
         string ExecutionLabel { get; set; }
         ReactiveList<Function> FilteredFunctions { get; set; }
         List<string> FunctionCategories { get; set; }
@@ -22,5 +23,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         ReactiveCommand<AsyncVoid> StartAsyncCommand { get; }
         ReactiveList<ComputationTaskViewModel> TasksToExecute { get; set; }
         ReactiveCommand<AsyncVoid> ToggleRunCancelCommand { get; }
+
+        Dictionary<string, ReactiveCommand<AsyncVoid>> ToggleExecutionDictionary { get; set; }
     }
 }

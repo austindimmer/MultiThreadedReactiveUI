@@ -48,6 +48,18 @@ namespace MultiThreadedReactiveUI
             this.DataContext = viewModel;
             //Setup two way binding with ViewModel
             this.Bind(ViewModel, x => x.SelectedTask, x => x.TasksSelectorList.SelectedItem);
+            this.Bind(ViewModel, x => x.SelectedCategory, x => x.FunctionCategorySelector.SelectedValue);
+
+            this.WhenActivated(d =>
+                {
+                    d(
+                        this.BindCommand(
+                        this.ViewModel,
+                        x => x.CategoryFilterSelected,
+                        x => x.FunctionCategorySelector,
+                        nameof(FunctionCategorySelector.SelectionChanged)));
+                });
+
         }
 
 
@@ -60,21 +72,15 @@ namespace MultiThreadedReactiveUI
                 Function func = selectedItem as Function;
                 ViewModel.SelectedFunctions.Add(func);
             }
-            
-        }
-
-        private void FunctionCategorySelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox combo = sender as ComboBox;
-            var selectedItem = combo.SelectedValue.ToString();
-            ViewModel.SelectedCategory = selectedItem;
-        }
-
-        private void TasksSelectorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //ListBox lb = sender as ListBox;
-            //ViewModel.SelectedTask = lb.SelectedItem as ComputationTaskViewModel;
 
         }
+
+        //private void FunctionCategorySelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    ComboBox combo = sender as ComboBox;
+        //    var selectedItem = combo.SelectedValue.ToString();
+        //    ViewModel.SelectedCategory = selectedItem;
+        //}
+
     }
 }
