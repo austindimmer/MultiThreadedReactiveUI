@@ -193,10 +193,10 @@ namespace MultiThreadedReactiveUI.ViewModel
                         Debug.WriteLine("percentComplete {0}", percentComplete);
                         if ((percentComplete % 1) == 0)
                             SetProgress(percentComplete);
-                        if (percentComplete == 100)
+                        if (CurrentLoopCounter == TotalIterationsForAllTasks)
                         {
                             SetComputationViewModelBusyIndicator(false);
-
+                            ToggleRunCancelCommand();
                         }
                     }
 
@@ -216,6 +216,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         /// <returns></returns>
         private Task<AsyncVoid> RunFunctionsToExecuteAsync()
         {
+            CurrentLoopCounter = 0;
             ToggleRunCancelCommand();
             //Calculate total iterations to perform at start of work
             TotalIterationsForAllTasks = TasksToExecute.Select(x => x.NumberOfIterations).Sum(x => x);
