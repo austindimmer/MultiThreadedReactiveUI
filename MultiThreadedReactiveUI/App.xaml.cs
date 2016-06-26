@@ -25,18 +25,7 @@ namespace MultiThreadedReactiveUI
             WireUpApplicationEvents();
             app = this;
             EnsureXamlResources(app);
-            // add custom accent and theme resource dictionaries to the ThemeManager
-            // you should replace MahAppsMetroThemesSample with your application name
-            // and correct place where your custom accent lives
-            MahApps.Metro.ThemeManager.AddAccent("CustomAccent", new Uri("pack://application:,,,/MultiThreadedReactiveUI;component/Resources/Styles/Accents/Black.xaml"));
 
-            // get the current app style (theme and accent) from the application
-            Tuple<AppTheme, Accent> theme = ThemeManager.DetectAppStyle(Application.Current);
-
-            // now change app style to the custom accent and current theme
-            ThemeManager.ChangeAppStyle(Application.Current,
-                                        ThemeManager.GetAccent("CustomAccent"),
-                                        theme.Item1);
 
             IoCContainer.Build();
             var mainWindow = IoCContainer.BaseContainer.Resolve<MainWindow>();
@@ -77,11 +66,11 @@ namespace MultiThreadedReactiveUI
             mahAppsColors.Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml", UriKind.RelativeOrAbsolute);
             app.Resources.MergedDictionaries.Add(mahAppsColors);
 
-            //mahAppsAccent.Source = new Uri("pack://application:,,,/MultiThreadedReactiveUI;component/Resources/Styles/Accents/Black.xaml", UriKind.RelativeOrAbsolute);
-            //app.Resources.MergedDictionaries.Add(mahAppsAccent);
-
-            mahAppsAccent.Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml", UriKind.RelativeOrAbsolute);
+            mahAppsAccent.Source = new Uri("pack://application:,,,/MultiThreadedReactiveUI;component/Resources/Styles/Accents/Black.xaml", UriKind.RelativeOrAbsolute);
             app.Resources.MergedDictionaries.Add(mahAppsAccent);
+
+            //mahAppsAccent.Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml", UriKind.RelativeOrAbsolute);
+            //app.Resources.MergedDictionaries.Add(mahAppsAccent);
 
             mahAppsAccentsBaseLight.Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml", UriKind.RelativeOrAbsolute);
             app.Resources.MergedDictionaries.Add(mahAppsAccentsBaseLight);

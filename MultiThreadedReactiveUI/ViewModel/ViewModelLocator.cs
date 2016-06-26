@@ -21,7 +21,7 @@ namespace MultiThreadedReactiveUI.ViewModel
                     if (isDisplayedInDesigner)
                     {
                         IFunctionDataProvider dataProvider = (IFunctionDataProvider)new DesignFunctionDataProvider();
-                        _mainViewModel = new MainViewModel(dataProvider);
+                        _mainViewModel = new MainViewModel(dataProvider, null);
                     }
 
                 }

@@ -20,5 +20,8 @@ namespace MultiThreadedReactiveUI.Model
         public static string FuncitonLn = "Ln";
         public static string FuncitonRnd = "Rnd";
         public static string FuncitonSort = "Sort";
+
+        public static string CancelButtonDisplayText = "Cancel";
+        public static string RunButtonDisplayText = "Run";
     }
 }

@@ -100,8 +100,10 @@
                     Grid.Column="3">
             <!--<Button Content="{Binding Path=ExecutionLabel}"
                     Style="{StaticResource AccentedSquareButtonStyle}"></Button>-->
-            <Button Content="Execute All Functions"
-                    Command="{Binding Path=StartAsyncCommand}"
+            <Button x:Name="RunCancelButton"
+                    Content="{Binding Path=DisplayText}"
+                    Command="{Binding Path=ReactiveCommandToExecute}"
+                    DataContext="{Binding Path=CurrentCancelRunViewModel, Mode=TwoWay}"
                     Style="{StaticResource AccentedSquareButtonStyle}"></Button>
         </StackPanel>
 

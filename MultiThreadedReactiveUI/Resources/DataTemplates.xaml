@@ -11,16 +11,20 @@
     </DataTemplate>
 
     <DataTemplate x:Key="TaskDataTemplate">
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
             <TextBlock Text="{Binding DisplayName}"
-                       FontWeight="SemiBold" />
+                       FontWeight="SemiBold" 
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       />
 
             <Controls:MetroProgressBar x:Name="ProgressBar"
                                        IsIndeterminate="{Binding Path=IsIndeterminate}"
+                                       
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"
                                        Value="{Binding Path=Progress}"
-                                       Foreground="White" />
+                                       Foreground="{StaticResource AccentColorBrushNavy}" />
         </StackPanel>
     </DataTemplate>
 

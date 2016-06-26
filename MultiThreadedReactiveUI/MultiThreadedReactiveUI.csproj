@@ -144,12 +144,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DispatcherExtensions.cs" />
     <Compile Include="Model\Constants.cs" />
+    <Compile Include="Model\LnFunction.cs" />
     <Compile Include="Model\CosFunction.cs" />
     <Compile Include="ViewModel\AsyncVoid.cs" />
+    <Compile Include="ViewModel\CancelRunViewModel.cs" />
     <Compile Include="ViewModel\ComputationTaskViewModel.cs" />
     <Compile Include="Model\IFunction.cs" />
     <Compile Include="Model\SinFunction.cs" />
+    <Compile Include="ViewModel\ICancelRunViewModel.cs" />
     <Compile Include="ViewModel\IMainViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\Observable.cs" />

@@ -49,6 +49,7 @@ namespace MultiThreadedReactiveUI
             //Setup two way binding with ViewModel
             this.Bind(ViewModel, x => x.SelectedTask, x => x.TasksSelectorList.SelectedItem);
             this.Bind(ViewModel, x => x.SelectedCategory, x => x.FunctionCategorySelector.SelectedValue);
+            //this.Bind(ViewModel, x => x.CurrentCancelRunViewModel, x => x.RunCancelButton.DataContext);
 
             this.WhenActivated(d =>
                 {

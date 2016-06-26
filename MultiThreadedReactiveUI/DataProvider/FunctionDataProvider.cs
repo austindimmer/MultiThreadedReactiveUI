@@ -11,6 +11,7 @@ namespace MultiThreadedReactiveUI.DataProvider
             List<Function> functionsToReturn = new List<Function>();
             functionsToReturn.Add(new SinFunction());
             functionsToReturn.Add(new CosFunction());
+            functionsToReturn.Add(new LnFunction());
             return functionsToReturn;
 
         }
