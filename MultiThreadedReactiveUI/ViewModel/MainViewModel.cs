@@ -2,17 +2,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using Autofac;
 using MultiThreadedReactiveUI.DataProvider;
 using MultiThreadedReactiveUI.Model;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System.Windows;
-using System.Windows.Threading;
-using Autofac;
 
 #endregion
 
@@ -24,13 +24,12 @@ namespace MultiThreadedReactiveUI.ViewModel
 
         private readonly IFunctionDataProvider _DataProvider;
         int CurrentLoopCounter;
-        public IContainer Container { get; set; }
 
 
 
         public MainViewModel(IFunctionDataProvider dataProvider, IContainer container)
         {
-            
+
             _DataProvider = dataProvider;
             Container = container;
             CancellationTokenSource = new CancellationTokenSource();
@@ -159,8 +158,6 @@ namespace MultiThreadedReactiveUI.ViewModel
         }
 
 
-
-
         private void ResetFunctionsData()
         {
             var functions = _DataProvider.LoadFunctions();
@@ -185,14 +182,24 @@ namespace MultiThreadedReactiveUI.ViewModel
             {
                 Parallel.ForEach(TasksToExecute, po, computationTaskViewModel =>
                 {
+                    for (int i = 0; i < computationTaskViewModel.NumberOfIterations; i++)
+                    {
+                        double d = computationTaskViewModel.FunctionToRun.Invoke(computationTaskViewModel.InputValue);
+                        Debug.WriteLine("Running {0} with result {1} on {2}", computationTaskViewModel.DisplayName, d, Thread.CurrentThread.ManagedThreadId);
+                        po.CancellationToken.ThrowIfCancellationRequested();
+                        Interlocked.Increment(ref this.CurrentLoopCounter);
+                        Debug.WriteLine("CurrentLoopCounter {0}", CurrentLoopCounter);
+                        int percentComplete = (int)Math.Round((double)(100 * CurrentLoopCounter) / TotalIterationsForAllTasks);
+                        Debug.WriteLine("percentComplete {0}", percentComplete);
+                        if ((percentComplete % 1) == 0)
+                            SetProgress(percentComplete);
+                        if (percentComplete == 100)
+                        {
+                            SetComputationViewModelBusyIndicator(false);
 
-                    //double d = Math.Sqrt(num);
-                    double d = computationTaskViewModel.FunctionToRun.Invoke(computationTaskViewModel.InputValue);
-                    Console.WriteLine("{0} on {1}", d, Thread.CurrentThread.ManagedThreadId);
-                    po.CancellationToken.ThrowIfCancellationRequested();
-                    Interlocked.Increment(ref this.CurrentLoopCounter);
-                    var currentProgress = (CurrentLoopCounter / TotalIterationsForAllTasks) * 100;
-                    computationTaskViewModel.Progress = currentProgress;
+                        }
+                    }
+
 
                 });
             }
@@ -211,7 +218,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         {
             ToggleRunCancelCommand();
             //Calculate total iterations to perform at start of work
-            TotalIterationsForAllTasks = TasksToExecute.Select(x => x.NumberOfIterations).Sum();
+            TotalIterationsForAllTasks = TasksToExecute.Select(x => x.NumberOfIterations).Sum(x => x);
             SetComputationViewModelBusyIndicator(true);
             return Task.Run(() =>
             {
@@ -227,16 +234,21 @@ namespace MultiThreadedReactiveUI.ViewModel
             Application.Current.Dispatcher.InvokeIfRequired(() =>
                {
                    if (value == false)
-                   {
-                       IsBusy = true ;
-                   }
-                   if (value == true) {
-                       IsBusy = false ;
-                   }
+                       IsBusy = true;
+                   if (value == true)
+                       IsBusy = false;
                    foreach (var computationTaskViewModel in TasksToExecute)
                        computationTaskViewModel.IsIndeterminate = value;
                }, Container);
 
+        }
+
+        private void SetProgress(int percentComplete)
+        {
+            Application.Current.Dispatcher.InvokeIfRequired(() =>
+               {
+                   ProgressForAllTasks = percentComplete;
+               }, Container);
         }
 
         private void SetupCancelRunViewModels()
@@ -263,9 +275,7 @@ namespace MultiThreadedReactiveUI.ViewModel
                     hasToggled = true;
                 }
                 if (CurrentCancelRunViewModel.DisplayText == Constants.CancelButtonDisplayText && hasToggled == false)
-                {
                     CurrentCancelRunViewModel = CancelRunViewModelRun;
-                }
             }, Container);
         }
 
@@ -298,14 +308,13 @@ namespace MultiThreadedReactiveUI.ViewModel
 
         public ReactiveCommand<List<ComputationTaskViewModel>> AddFunctionToFunctionsToExecute { get; protected set; }
         public ReactiveCommand<AsyncVoid> CancelRunningFunctionsToExecute { get; protected set; }
-        [Reactive]
-        public bool IsBusy { get; set; }
 
         [Reactive]
         public CancelRunViewModel CancelRunViewModelCancel { get; set; }
         [Reactive]
         public CancelRunViewModel CancelRunViewModelRun { get; set; }
         public ReactiveCommand<IEnumerable<Function>> CategoryFilterSelected { get; protected set; }
+        public IContainer Container { get; set; }
         [Reactive]
         public CancelRunViewModel CurrentCancelRunViewModel { get; set; }
         [Reactive]
@@ -318,6 +327,8 @@ namespace MultiThreadedReactiveUI.ViewModel
 
         [Reactive]
         public ReactiveList<Function> Functions { get; set; }
+        [Reactive]
+        public bool IsBusy { get; set; }
         [Reactive]
         public int ProgressForAllTasks { get; set; }
 

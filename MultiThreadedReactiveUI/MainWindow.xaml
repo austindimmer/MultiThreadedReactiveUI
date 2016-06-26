@@ -119,7 +119,7 @@
             <Controls:MetroProgressBar x:Name="ProgressBar"
                                        Height="1"
                                        IsIndeterminate="{Binding Path=IsBusyIndeterminate}"
-                                       Value="{Binding Path=Progress}"
+                                       Value="{Binding Path=ProgressForAllTasks}"
                                        Foreground="{StaticResource AccentColorBrushNavy}" />
 
 
