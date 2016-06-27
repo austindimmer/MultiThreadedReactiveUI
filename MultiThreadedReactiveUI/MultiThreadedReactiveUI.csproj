@@ -144,6 +144,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="PercentageConverter.cs" />
     <Compile Include="DispatcherExtensions.cs" />
     <Compile Include="Model\Constants.cs" />
     <Compile Include="Model\RndFunction.cs" />

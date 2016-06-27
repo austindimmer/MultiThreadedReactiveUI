@@ -8,6 +8,8 @@
                 Value="{StaticResource IdealForegroundColorBrush}" />
     </Style>
     <Style TargetType="{x:Type ListBox}">
+        <Setter Property="Width"
+                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}},Path=Width}" />
         <Setter Property="HorizontalAlignment"
                 Value="Stretch" />
         <Setter Property="VerticalAlignment"
@@ -16,6 +18,8 @@
                 Value="True" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
                 Value="Auto" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Disabled" />
                 <Setter Property="BorderBrush"
                 Value="{StaticResource AccentColorBrush}" />
         <Setter Property="Background"
