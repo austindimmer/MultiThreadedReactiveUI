@@ -139,6 +139,7 @@ namespace MultiThreadedReactiveUI.ViewModel
                 }
                 finally
                 {
+                    ResetComputationTaskViewModel();
                     ToggleRunCancelCommand();
                     SetComputationViewModelBusyIndicator(false);
                     CancellationTokenSource.Dispose();
@@ -190,25 +191,27 @@ namespace MultiThreadedReactiveUI.ViewModel
                     for (int i = 0; i < computationTaskViewModel.Value.NumberOfIterations; i++)
                     {
                         double d = computationTaskViewModel.Value.FunctionToRun.Invoke(computationTaskViewModel.Value.InputValue);
-                        Debug.WriteLine("Running {0} with result {1} on {2}", computationTaskViewModel.Value.DisplayName, d, Thread.CurrentThread.ManagedThreadId);
                         po.CancellationToken.ThrowIfCancellationRequested();
                         Interlocked.Increment(ref this.CurrentLoopCounter);
-                        Debug.WriteLine("CurrentLoopCounter {0}", CurrentLoopCounter);
                         int percentCompleteIndividualTask = (int)Math.Round((double)(100 * i) / computationTaskViewModel.Value.NumberOfIterations);
                         computationTaskViewModel.Value.Progress = percentCompleteIndividualTask;
-                        if ((percentCompleteIndividualTask % 10) == 0)
+                        if ((percentCompleteIndividualTask % 100) == 0)
                         {
                             UpdateComputationTaskViewModel(computationTaskViewModel);
                         }
                         int percentCompleteAllTasks = (int)Math.Round((double)(100 * CurrentLoopCounter) / TotalIterationsForAllTasks);
-                        Debug.WriteLine("percentComplete {0}", percentCompleteAllTasks);
-                        if ((percentCompleteAllTasks % 1) == 0) {
+                        //if ((percentCompleteAllTasks % 50) == 0) {
+                        //    SetProgress(percentCompleteAllTasks);
+                        //}
+                        if (percentCompleteIndividualTask == 100)
+                        {
                             SetProgress(percentCompleteAllTasks);
                         }
 
                         if (CurrentLoopCounter == TotalIterationsForAllTasks)
                         {
                             SetComputationViewModelBusyIndicator(false);
+                            SetProgress(100);
                             ToggleRunCancelCommand();
                         }
                     }
@@ -252,6 +255,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         private Task<AsyncVoid> RunFunctionsToExecuteAsync()
         {
             ResetComputationTaskViewModel();
+            SetProgress(0);
             CurrentLoopCounter = 0;
             ToggleRunCancelCommand();
             //Calculate total iterations to perform at start of work
