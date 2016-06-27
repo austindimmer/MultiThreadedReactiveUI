@@ -5,6 +5,7 @@
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:local="clr-namespace:MultiThreadedReactiveUI"
                        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                       xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
                        mc:Ignorable="d"
                        d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainViewModel}"
                        Title="Austin Dimmer">
@@ -28,7 +29,8 @@
                     Grid.Row="0">
             <Label>Function Category</Label>
             <ComboBox x:Name="FunctionCategorySelector"
-                      ItemsSource="{Binding Path=FunctionCategories}" IsEnabled="{Binding Path=IsBusy}"></ComboBox>
+                      ItemsSource="{Binding Path=FunctionCategories}"
+                      IsEnabled="{Binding Path=IsBusy}"></ComboBox>
         </StackPanel>
 
         <Grid x:Name="FunctionsSelectorLayout"
@@ -87,17 +89,27 @@
         <StackPanel x:Name="VariablesLayout"
                     Grid.Column="4"
                     Grid.RowSpan="2"
-                    DataContext="{Binding Path=SelectedTask}"
-                    >
+                    DataContext="{Binding Path=SelectedTask}">
             <Label Grid.Row="0">Parameter</Label>
             <TextBox Grid.Row="1"
                      x:Name="ParameterTextBox"
-                     Text="{Binding Path=InputValue}"
-                     ></TextBox>
+                     Text="{Binding Path=InputValue}">
+                <interactivity:Interaction.Behaviors>
+                    <local:TextBoxInputRegExBehaviour RegularExpression="^\d+$"
+                                                      MaxLength="9"
+                                                      EmptyValue="0" />
+                </interactivity:Interaction.Behaviors>
+            </TextBox>
             <Label Grid.Row="2">Iterations</Label>
             <TextBox Grid.Row="3"
                      x:Name="IterationsTextBox"
-                     Text="{Binding Path=NumberOfIterations}"></TextBox>
+                     Text="{Binding Path=NumberOfIterations}">
+                <interactivity:Interaction.Behaviors>
+                    <local:TextBoxInputRegExBehaviour RegularExpression="^\d+$"
+                                                      MaxLength="9"
+                                                      EmptyValue="0" />
+                </interactivity:Interaction.Behaviors>
+            </TextBox>
         </StackPanel>
 
         <StackPanel x:Name="ExecuteCancelButtonLayout"
