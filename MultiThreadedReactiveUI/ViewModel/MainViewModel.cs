@@ -88,15 +88,15 @@ namespace MultiThreadedReactiveUI.ViewModel
                     {
                         if (Functions != null || Functions.Count > 0)
                         {
-                            ReactiveList<Function> newFunctions = new ReactiveList<Function>();
-                            newFunctions.AddRange(p);
-                            Functions = newFunctions;
+
+                            using (Functions.SuppressChangeNotifications())
+                            {
+                                ReactiveList<Function> newFunctions = new ReactiveList<Function>();
+                                newFunctions.AddRange(p);
+                                Functions = newFunctions;
+                            }
                         }
-                        //using (Functions.SuppressChangeNotifications())
-                        //{
 
-
-                        //}
                     });
             CategoryFilterSelected.ThrownExceptions.Subscribe(
                     ex => Console.WriteLine("Error whilst filtering Categories! Err: {0}", ex.Message));
@@ -196,7 +196,7 @@ namespace MultiThreadedReactiveUI.ViewModel
                         Debug.WriteLine("CurrentLoopCounter {0}", CurrentLoopCounter);
                         int percentCompleteIndividualTask = (int)Math.Round((double)(100 * i) / computationTaskViewModel.Value.NumberOfIterations);
                         computationTaskViewModel.Value.Progress = percentCompleteIndividualTask;
-                        if ((percentCompleteIndividualTask % 1) == 0)
+                        if ((percentCompleteIndividualTask % 10) == 0)
                         {
                             UpdateComputationTaskViewModel(computationTaskViewModel);
                         }
@@ -233,12 +233,25 @@ namespace MultiThreadedReactiveUI.ViewModel
                }, Container);
         }
 
+        private void ResetComputationTaskViewModel()
+        {
+            Application.Current.Dispatcher.InvokeIfRequired(() =>
+             {
+                 foreach (var computationTaskViewModel in TasksToExecute)
+                 {
+                     computationTaskViewModel.IsIndeterminate = false;
+                     computationTaskViewModel.Progress = 0;
+                 }
+             }, Container);
+        }
+
         /// <summary>
         /// This method will set UI on all tasks to indeterminate and then iterate through all the work to be done.
         /// </summary>
         /// <returns></returns>
         private Task<AsyncVoid> RunFunctionsToExecuteAsync()
         {
+            ResetComputationTaskViewModel();
             CurrentLoopCounter = 0;
             ToggleRunCancelCommand();
             //Calculate total iterations to perform at start of work
@@ -316,7 +329,8 @@ namespace MultiThreadedReactiveUI.ViewModel
 
                 if (SelectedCategory != Constants.CategoryAll)
                 {
-                    var FunctionsToReturn = Functions.Select(x => x).Where(y => y.Category == SelectedCategory);
+                    var functions = _DataProvider.LoadFunctions();
+                    var FunctionsToReturn = functions.Select(x => x).Where(y => y.Category == SelectedCategory);
                     return FunctionsToReturn;
                 }
                 else

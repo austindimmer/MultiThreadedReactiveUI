@@ -10,7 +10,8 @@ namespace MultiThreadedReactiveUI.ViewModel
 {
     public class ComputationTaskViewModel : ReactiveObject
     {
-        public ComputationTaskViewModel(Func<double, double> functionToRun,double inputValue = 1.0, int numberOfIterations = 1000000)
+        //public ComputationTaskViewModel(Func<double, double> functionToRun,double inputValue = 1.0, int numberOfIterations = 1000000)
+            public ComputationTaskViewModel(Func<double, double> functionToRun, double inputValue = 1.0, int numberOfIterations = 100000)
         {
             this.FunctionToRun = functionToRun;
             this.InputValue = inputValue;
