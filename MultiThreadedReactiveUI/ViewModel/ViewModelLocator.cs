@@ -4,28 +4,26 @@ using System.Windows;
 using Autofac;
 using MultiThreadedReactiveUI.DataProvider;
 using MultiThreadedReactiveUI.DesignTimeData;
-using MultiThreadedReactiveUI.ViewModel;
 
 namespace MultiThreadedReactiveUI.ViewModel
 {
     public class ViewModelLocator
     {
-        private MainViewModel _mainViewModel;
-        public MainViewModel MainViewModel
+        private StocksViewModel _stocksViewModel;
+        public StocksViewModel StocksViewModel
         {
             get
             {
                 bool isDisplayedInDesigner = DesignerProperties.GetIsInDesignMode(new FrameworkElement());
-                if (_mainViewModel == null)
+                if (_stocksViewModel == null)
                 {
                     if (isDisplayedInDesigner)
                     {
-                        IFunctionDataProvider dataProvider = (IFunctionDataProvider)new DesignFunctionDataProvider();
-                        _mainViewModel = new MainViewModel(dataProvider, null);
+                        IStocksDataProvider dataProvider = (IStocksDataProvider)new DesignFunctionDataProvider();
+                        _stocksViewModel = new StocksViewModel(dataProvider, null);
                     }
-
                 }
-                return _mainViewModel;
+                return _stocksViewModel;
             }
         }
     }

@@ -11,7 +11,72 @@
         </StackPanel>
     </DataTemplate>
 
-    <DataTemplate x:Key="TaskDataTemplate">
+    <DataTemplate x:Key="StockDetailsDataTemplate">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Dividend Yield: "
+                       FontWeight="Light" />
+                <Label Content="{Binding DividendYield}"
+                       FontWeight="SemiBold" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="P/E Ratio: "
+                       FontWeight="Light" />
+                <Label Content="{Binding DividendYield}"
+                       FontWeight="SemiBold" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Price: "
+                       FontWeight="Light" />
+                <Label Content="{Binding DividendYield}"
+                       FontWeight="SemiBold" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+        <DataTemplate x:Key="TradedStockDataTemplate">
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Symbol: "
+                       FontWeight="Light" />
+                <Label Content="{Binding Symbol}"
+                       FontWeight="SemiBold" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Quantiy: "
+                       FontWeight="Light" />
+                <Label Content="{Binding Quantiy}"
+                       FontWeight="SemiBold" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Price: "
+                       FontWeight="Light" />
+                <Label Content="{Binding Price}"
+                       FontWeight="SemiBold" />
+            </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                <Label Content="TradeType: "
+                       FontWeight="Light" />
+                <Label Content="{Binding TradeType}"
+                       FontWeight="SemiBold" />
+            </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                <Label Content="Timestamp: "
+                       FontWeight="Light" />
+                <Label Content="{Binding Timestamp}"
+                       FontWeight="SemiBold" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="StockListDataTemplate">
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="{Binding Symbol}"
+                       FontWeight="SemiBold" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TradeExecutionDataTemplate">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -22,11 +87,10 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
-                       Text="{Binding DisplayName}"
+                       Text="{Binding Symbol}"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-                       />
+                       VerticalAlignment="Stretch" />
 
             <Controls:MetroProgressBar x:Name="ProgressBar"
                                        Grid.Row="1"

@@ -164,6 +164,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataProvider\StocksDataProvider.cs" />
+    <Compile Include="DataProvider\IStocksDataProvider.cs" />
+    <Compile Include="Converters\EnumToCollectionConverter.cs" />
+    <Compile Include="Converters\EnumHelper.cs" />
+    <Compile Include="Model\Stock.cs" />
+    <Compile Include="Model\StockType.cs" />
+    <Compile Include="Converters\ValueDescription.cs" />
+    <Compile Include="StocksWindow.xaml.cs">
+      <DependentUpon>StocksWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TextBoxInputRegExBehaviour.cs" />
     <Compile Include="PercentageConverter.cs" />
     <Compile Include="DispatcherExtensions.cs" />
@@ -175,13 +185,17 @@
     <Compile Include="Model\CosFunction.cs" />
     <Compile Include="ViewModel\AsyncVoid.cs" />
     <Compile Include="ViewModel\CancelRunViewModel.cs" />
+    <Compile Include="ViewModel\IStocksViewModel.cs" />
+    <Compile Include="ViewModel\StockTradeExecutionTaskViewModel.cs" />
     <Compile Include="ViewModel\ComputationTaskViewModel.cs" />
     <Compile Include="Model\IFunction.cs" />
     <Compile Include="Model\SinFunction.cs" />
     <Compile Include="ViewModel\ICancelRunViewModel.cs" />
     <Compile Include="ViewModel\IMainViewModel.cs" />
+    <Compile Include="ViewModel\StocksViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\Observable.cs" />
+    <Compile Include="Model\TradeType.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -221,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\GlobalStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StocksWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

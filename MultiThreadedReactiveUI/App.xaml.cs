@@ -26,9 +26,8 @@ namespace MultiThreadedReactiveUI
             app = this;
             EnsureXamlResources(app);
 
-
             IoCContainer.Build();
-            var mainWindow = IoCContainer.BaseContainer.Resolve<MainWindow>();
+            var mainWindow = IoCContainer.BaseContainer.Resolve<StocksWindow>();
             MainWindow = mainWindow;
             Application.Current.MainWindow = mainWindow;
             Application.Current.MainWindow.Show();
@@ -54,8 +53,6 @@ namespace MultiThreadedReactiveUI
             var mahAppsAccent = new ResourceDictionary();
             var mahAppsAccentsBaseLight = new ResourceDictionary();
             var mahAppsIcons = new ResourceDictionary();
-
-
 
             mahAppsControls.Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute);
             app.Resources.MergedDictionaries.Add(mahAppsControls);

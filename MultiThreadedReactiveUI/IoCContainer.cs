@@ -22,9 +22,9 @@ namespace MultiThreadedReactiveUI
             {
                 var builder = new ContainerBuilder();
                 builder.RegisterModule<WhiteboxProfilingModule>();
-                builder.RegisterType<FunctionDataProvider>().As<IFunctionDataProvider>();
-                builder.RegisterType<MainViewModel>();
-                builder.RegisterType<MainWindow>();
+                builder.RegisterType<StocksDataProvider>().As<IStocksDataProvider>();
+                builder.RegisterType<StocksViewModel>();
+                builder.RegisterType<StocksWindow>();
 
                 BaseContainer = builder.Build();
                 ConfigureContainer();
