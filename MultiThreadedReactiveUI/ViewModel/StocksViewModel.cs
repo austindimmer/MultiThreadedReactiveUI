@@ -80,8 +80,6 @@ namespace MultiThreadedReactiveUI.ViewModel
             CancelRunningStocksToExecute.ThrownExceptions.Subscribe(
                 ex => Console.WriteLine("Error whilst cancelling running Stocks! Err: {0}", ex.Message));
 
-
-
             SetupCancelRunViewModels();
             SetComputationViewModelBusyIndicator(false);
 
@@ -95,8 +93,7 @@ namespace MultiThreadedReactiveUI.ViewModel
                 foreach (var Stock in SelectedStocks)
                 {
                     StockTradeExecutionTaskViewModel viewModel = new StockTradeExecutionTaskViewModel();
-                    viewModel.Symbol = Stock.Symbol;
-                    viewModel.Price = Stock.Price;
+                    viewModel.Stock = Stock;
                     viewModel.Quantity = 10;
                     viewModel.TradeType = TradeType.Buy;
                     updatedList.Add(viewModel);
@@ -106,21 +103,17 @@ namespace MultiThreadedReactiveUI.ViewModel
             });
         }
 
-        private Task<AsyncVoid> SimulateTrades(KeyValuePair<int, StockTradeExecutionTaskViewModel> stockTradeExecutionTaskViewModel)
+        private void  SimulateTrades(KeyValuePair<int, StockTradeExecutionTaskViewModel> stockTradeExecutionTaskViewModel)
         {
-            return Task.Run(() =>
-            {
                 int progress = 0;
                 while (progress <= 100)
                 {
                     progress += 1;
+                    Debug.WriteLine(String.Format("Stock: {0} Progress: {1}", stockTradeExecutionTaskViewModel.Value.Stock.Symbol, progress));
                     UpdateStockTradeExecutionTaskViewModel(stockTradeExecutionTaskViewModel, progress);
-                    SetProgress(ProgressForAllTasks);
-                    Thread.Sleep(50);
+                    Thread.Sleep(1);
                 }
 
-                return AsyncVoid.Default;
-            });
         }
 
 
@@ -186,12 +179,23 @@ namespace MultiThreadedReactiveUI.ViewModel
             {
                 tasks.TryAdd(i, TradesToExecute[i]);
             }
+            TotalIterationsForAllTasks = tasks.Count;
             try
             {
                 Parallel.ForEach(tasks, po, StockTradeExecutionTaskViewModel =>
                 {
                     SimulateTrades(StockTradeExecutionTaskViewModel);
                     UpdateTradesExecuted(StockTradeExecutionTaskViewModel.Value);
+                    int percentCompleteAllTasks = (int)Math.Round((double)(100 * CurrentLoopCounter) / TotalIterationsForAllTasks);
+                    SetProgress(percentCompleteAllTasks);
+                    Interlocked.Increment(ref this.CurrentLoopCounter);
+                    if (CurrentLoopCounter == TotalIterationsForAllTasks)
+                    {
+                        SetComputationViewModelBusyIndicator(false);
+                        SetProgress(100);
+                        ToggleRunCancelCommand();
+                    }
+
                     //for (int i = 0; i < StockTradeExecutionTaskViewModel.Value.NumberOfIterations; i++)
                     //{
                     //    double d = StockTradeExecutionTaskViewModel.Value.StockToRun.Invoke(StockTradeExecutionTaskViewModel.Value.InputValue);
@@ -203,18 +207,13 @@ namespace MultiThreadedReactiveUI.ViewModel
                     //    {
                     //        UpdateStockTradeExecutionTaskViewModel(StockTradeExecutionTaskViewModel);
                     //    }
-                    //    int percentCompleteAllTasks = (int)Math.Round((double)(100 * CurrentLoopCounter) / TotalIterationsForAllTasks);
+
                     //    if (percentCompleteIndividualTask == 100)
                     //    {
                     //        SetProgress(percentCompleteAllTasks);
                     //    }
 
-                    //    if (CurrentLoopCounter == TotalIterationsForAllTasks)
-                    //    {
-                    //        SetComputationViewModelBusyIndicator(false);
-                    //        SetProgress(100);
-                    //        ToggleRunCancelCommand();
-                    //    }
+
                     //}
 
 
@@ -241,7 +240,8 @@ namespace MultiThreadedReactiveUI.ViewModel
         {
             Application.Current.Dispatcher.InvokeIfRequired(() =>
              {
-                 var viewModelToUpdate = TradesToExecute.ElementAt(StockTradeExecutionTaskViewModel.Key);
+                 var viewModelToUpdate = TradesToExecute[StockTradeExecutionTaskViewModel.Key];
+                 Debug.WriteLine(String.Format("Updating ViewModel for Stock: {0} Key: {1} Progress: {2}", viewModelToUpdate.Stock.Symbol, viewModelToUpdate.Timestamp, progress));
                  viewModelToUpdate.IsIndeterminate = false;
                  viewModelToUpdate.Progress = progress;
              }, Container);
@@ -377,6 +377,6 @@ namespace MultiThreadedReactiveUI.ViewModel
         public Dictionary<string, ReactiveCommand<AsyncVoid>> ToggleExecutionDictionary { get; set; }
         [Reactive]
         public int TotalIterationsForAllTasks { get; set; }
-
+        public int TotalProgressCounter { get; private set; }
     }
 }

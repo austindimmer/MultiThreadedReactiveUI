@@ -14,5 +14,9 @@ namespace MultiThreadedReactiveUI.Model
         public decimal FixedDividend { get; set; }
         public decimal ParValue { get; set; }
         public decimal Price { get; set; }
+
+        public decimal AveragePrice { get; set; }
+        public decimal PERatio { get; set; }
+        public decimal DividendYield { get; set; }
     }
 }

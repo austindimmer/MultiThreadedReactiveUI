@@ -15,7 +15,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         {
         }
         [Reactive]
-        public string Symbol { get; set; }
+        public Stock Stock { get; set; }
         [Reactive]
         public DateTime Timestamp { get; set; }
         [Reactive]
@@ -23,7 +23,6 @@ namespace MultiThreadedReactiveUI.ViewModel
         [Reactive]
         public TradeType TradeType { get; set; }
         [Reactive]
-        public decimal Price { get; set; }
         public int Progress { get; set; }
         [Reactive]
         public bool IsIndeterminate { get; set; }

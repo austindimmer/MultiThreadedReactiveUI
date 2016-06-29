@@ -37,34 +37,34 @@
         <DataTemplate x:Key="TradedStockDataTemplate">
         <StackPanel Orientation="Horizontal">
             <StackPanel Orientation="Horizontal">
-                <Label Content="Symbol: "
+                <TextBlock Text="Symbol: "
                        FontWeight="Light" />
-                <Label Content="{Binding Symbol}"
-                       FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Stock.Symbol}"
+                       FontWeight="Bold" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Label Content="Quantiy: "
+                <TextBlock Text="Quantiy: "
                        FontWeight="Light" />
-                <Label Content="{Binding Quantiy}"
-                       FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Quantity}"
+                       FontWeight="Bold" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Label Content="Price: "
+                <TextBlock Text="Price: "
                        FontWeight="Light" />
-                <Label Content="{Binding Price}"
-                       FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Stock.Price}"
+                       FontWeight="Bold" />
             </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                <Label Content="TradeType: "
+                <TextBlock Text="TradeType: "
                        FontWeight="Light" />
-                <Label Content="{Binding TradeType}"
-                       FontWeight="SemiBold" />
+                <TextBlock Text="{Binding TradeType}"
+                       FontWeight="Bold" />
             </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                <Label Content="Timestamp: "
+                <TextBlock Text="Timestamp: "
                        FontWeight="Light" />
-                <Label Content="{Binding Timestamp}"
-                       FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Timestamp}"
+                       FontWeight="Bold" />
             </StackPanel>
         </StackPanel>
     </DataTemplate>
@@ -87,7 +87,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
-                       Text="{Binding Symbol}"
+                       Text="{Binding Stock.Symbol}"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch" />

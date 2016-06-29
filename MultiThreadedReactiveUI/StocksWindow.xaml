@@ -9,20 +9,21 @@
                        xmlns:sys="clr-namespace:System;assembly=mscorlib"
                        xmlns:multiThreadedReactiveUI.Converters="clr-namespace:MultiThreadedReactiveUI.Converters"
                        mc:Ignorable="d"
+                       WindowState="Maximized"
                        d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainViewModel}"
                        Title="Austin Dimmer">
 
 
     <Grid x:Name="LayoutRoot">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.2*"></ColumnDefinition>
+            <ColumnDefinition Width="0.15*"></ColumnDefinition>
             <ColumnDefinition Width="0.1*"></ColumnDefinition>
-            <ColumnDefinition Width="0.3*"></ColumnDefinition>
-            <ColumnDefinition Width="0.3*"></ColumnDefinition>
-            <ColumnDefinition Width="0.3*"></ColumnDefinition>
+            <ColumnDefinition Width="0.15*"></ColumnDefinition>
+            <ColumnDefinition Width="0.2*"></ColumnDefinition>
+            <ColumnDefinition Width="0.4*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.15*"></RowDefinition>
+            <RowDefinition Height="0.06*"></RowDefinition>
             <RowDefinition Height="0.65*"></RowDefinition>
             <RowDefinition Height="0.1*"></RowDefinition>
             <RowDefinition Height="0.1*"></RowDefinition>
@@ -30,17 +31,12 @@
 
 
 
-        <Grid x:Name="StocksSelectorLabel"
-              Grid.Row="0"
-              Grid.RowSpan="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
+        <StackPanel x:Name="StocksSelectorLabel"
+                    Grid.Row="0"
+                    VerticalAlignment="Bottom">
             <Label Grid.Row="0">Stocks</Label>
-        </Grid>
+        </StackPanel>
+
         <Grid x:Name="StocksSelectorLayout"
               Grid.Row="1"
               Grid.RowSpan="2">
@@ -74,17 +70,11 @@
         </StackPanel>
 
 
-        <Grid x:Name="TradeSelectorLabel"
-              Grid.Column="2"
-              Grid.RowSpan="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
+        <StackPanel x:Name="TradeSelectorLabel"
+                    Grid.Column="2"
+                    VerticalAlignment="Bottom">
             <Label Grid.Row="0">Trades to Execute</Label>
-        </Grid>
+        </StackPanel>
 
         <Grid x:Name="TradeSelectorLayout"
               Grid.Row="1"
@@ -105,10 +95,11 @@
         </Grid>
 
         <StackPanel x:Name="TradeVariablesLayout"
+                    Grid.Row="1"
                     Grid.Column="3"
                     Grid.RowSpan="2"
                     DataContext="{Binding Path=SelectedStockToTrade}">
-            <Label Content="{Binding Path=Symbol}"></Label>
+            <Label Content="{Binding Path=Stock.Symbol}"></Label>
             <Label Content="Quantity"></Label>
             <TextBox x:Name="QuantityTextBox"
                      Text="{Binding Path=Quantity}">
@@ -120,7 +111,7 @@
             </TextBox>
             <Label Content="Price"></Label>
             <TextBox x:Name="PriceTextBox"
-                     Text="{Binding Path=Price}">
+                     Text="{Binding Path=Stock.Price}">
                 <interactivity:Interaction.Behaviors>
                     <local:TextBoxInputRegExBehaviour RegularExpression="^\d+$"
                                                       MaxLength="9"
@@ -128,11 +119,12 @@
                 </interactivity:Interaction.Behaviors>
             </TextBox>
             <!--<ComboBox x:Name="CurrentTradeTypeCombo" ItemsSource="{Binding Source={StaticResource TradeTypes}}"/>-->
-            <ComboBox x:Name="CurrentTradeTypeCombo" ItemsSource="{Binding Path=TradeType, Converter={multiThreadedReactiveUI.Converters:EnumToCollectionConverter}, Mode=OneTime}"
-          SelectedValuePath="Value"
-          DisplayMemberPath="Description"
-          SelectedValue="{Binding Path=TradeType}" />
-            
+            <ComboBox x:Name="CurrentTradeTypeCombo"
+                      ItemsSource="{Binding Path=TradeType, Converter={multiThreadedReactiveUI.Converters:EnumToCollectionConverter}, Mode=OneTime}"
+                      SelectedValuePath="Value"
+                      DisplayMemberPath="Description"
+                      SelectedValue="{Binding Path=TradeType}" />
+
 
         </StackPanel>
 

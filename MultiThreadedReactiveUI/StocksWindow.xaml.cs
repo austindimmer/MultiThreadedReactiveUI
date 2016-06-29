@@ -33,9 +33,6 @@ namespace MultiThreadedReactiveUI
             //Setup two way binding with ViewModel
             this.Bind(ViewModel, x => x.SelectedStockToTrade, x => x.TradeSelectorList.SelectedItem);
             this.Bind(ViewModel, x => x.SelectedStockToTrade.TradeType, x => x.CurrentTradeTypeCombo.SelectedValue);
-
-            
-
         }
 
         public IStocksViewModel ViewModel
