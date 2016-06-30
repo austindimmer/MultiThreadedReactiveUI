@@ -68,9 +68,9 @@
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Stock: "
-                           FontWeight="Normal" FontSize="18" />
+                           FontWeight="Normal" FontSize="16" />
                 <TextBlock Text="{Binding Symbol}"
-                           FontWeight="Bold"  FontSize="18"/>
+                           FontWeight="Bold"  FontSize="16"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal">
@@ -108,7 +108,7 @@
             <TextBlock Grid.Row="0"
                        Text="{Binding Symbol}"
                        FontWeight="SemiBold"
-                       FontSize="18"
+                       FontSize="16"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch" />
 
