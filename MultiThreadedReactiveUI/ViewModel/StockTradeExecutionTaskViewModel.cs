@@ -9,13 +9,12 @@ using MultiThreadedReactiveUI.Model;
 
 namespace MultiThreadedReactiveUI.ViewModel
 {
-    public class StockTradeExecutionTaskViewModel : ReactiveObject
+    public class StockTradeExecutionTaskViewModel : ReactiveObject, IStock
     {
         public StockTradeExecutionTaskViewModel()
         {
         }
-        [Reactive]
-        public Stock Stock { get; set; }
+
         [Reactive]
         public DateTime Timestamp { get; set; }
         [Reactive]
@@ -26,5 +25,23 @@ namespace MultiThreadedReactiveUI.ViewModel
         public int Progress { get; set; }
         [Reactive]
         public bool IsIndeterminate { get; set; }
+        [Reactive]
+        public decimal AveragePrice { get; set; }
+        [Reactive]
+        public decimal DividendYield { get; set; }
+        [Reactive]
+        public decimal FixedDividend { get; set; }
+        [Reactive]
+        public decimal LastDividend { get; set; }
+        [Reactive]
+        public decimal ParValue { get; set; }
+        [Reactive]
+        public decimal PERatio { get; set; }
+        [Reactive]
+        public decimal Price { get; set; }
+        [Reactive]
+        public string Symbol { get; set; }
+        [Reactive]
+        public StockType Type { get; set; }
     }
 }

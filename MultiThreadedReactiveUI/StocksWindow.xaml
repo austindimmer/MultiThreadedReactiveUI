@@ -99,7 +99,7 @@
                     Grid.Column="3"
                     Grid.RowSpan="2"
                     DataContext="{Binding Path=SelectedStockToTrade}">
-            <Label Content="{Binding Path=Stock.Symbol}"></Label>
+            <Label Content="{Binding Path=Symbol}"></Label>
             <Label Content="Quantity"></Label>
             <TextBox x:Name="QuantityTextBox"
                      Text="{Binding Path=Quantity}">
@@ -111,7 +111,7 @@
             </TextBox>
             <Label Content="Price"></Label>
             <TextBox x:Name="PriceTextBox"
-                     Text="{Binding Path=Stock.Price}">
+                     Text="{Binding Path=Price}">
                 <interactivity:Interaction.Behaviors>
                     <local:TextBoxInputRegExBehaviour RegularExpression="^\d+$"
                                                       MaxLength="9"

@@ -168,6 +168,8 @@
     <Compile Include="DataProvider\IStocksDataProvider.cs" />
     <Compile Include="Converters\EnumToCollectionConverter.cs" />
     <Compile Include="Converters\EnumHelper.cs" />
+    <Compile Include="Extensions\RxExtensions.cs" />
+    <Compile Include="Model\IStock.cs" />
     <Compile Include="Model\Stock.cs" />
     <Compile Include="Model\StockType.cs" />
     <Compile Include="Converters\ValueDescription.cs" />

@@ -39,7 +39,7 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Symbol: "
                        FontWeight="Light" />
-                <TextBlock Text="{Binding Stock.Symbol}"
+                <TextBlock Text="{Binding Symbol}"
                        FontWeight="Bold" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -51,7 +51,7 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Price: "
                        FontWeight="Light" />
-                <TextBlock Text="{Binding Stock.Price}"
+                <TextBlock Text="{Binding Price}"
                        FontWeight="Bold" />
             </StackPanel>
                         <StackPanel Orientation="Horizontal">
@@ -87,7 +87,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
-                       Text="{Binding Stock.Symbol}"
+                       Text="{Binding Symbol}"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch" />
