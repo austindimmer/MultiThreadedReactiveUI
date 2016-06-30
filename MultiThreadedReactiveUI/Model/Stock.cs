@@ -23,8 +23,6 @@ namespace MultiThreadedReactiveUI.Model
         [Reactive]
         public decimal Price { get; set; }
         [Reactive]
-        public decimal AveragePrice { get; set; }
-        [Reactive]
         public decimal PERatio { get; set; }
         [Reactive]
         public decimal DividendYield { get; set; }

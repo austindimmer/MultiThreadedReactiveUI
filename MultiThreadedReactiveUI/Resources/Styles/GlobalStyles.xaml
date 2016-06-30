@@ -18,35 +18,42 @@
                 Value="True" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
                 Value="Auto" />
-                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
                 Value="Disabled" />
-                <Setter Property="BorderBrush"
+        <Setter Property="BorderBrush"
                 Value="{StaticResource AccentColorBrush}" />
         <Setter Property="Background"
                 Value="{StaticResource AccentColorBrush}" />
         <Setter Property="Foreground"
                 Value="{StaticResource IdealForegroundColorBrush}" />
-                <Setter Property="Margin"
+        <Setter Property="Margin"
                 Value="4,4,4,4" />
     </Style>
 
-    <Style TargetType="{x:Type Label}">
+    <Style  x:Key="LabelBaseStyle" TargetType="{x:Type Label}">
         <Setter Property="Foreground"
                 Value="{StaticResource ResourceKey=IdealForegroundColorBrush}" />
         <Setter Property="FontWeight"
                 Value="Bold" />
+                <Setter Property="FontSize"
+                Value="14" />
         <Setter Property="FontFamily"
                 Value="SegoeUI" />
         <Setter Property="Margin"
                 Value="1,4,4,4" />
     </Style>
 
+    <Style x:Key="HeaderLabelStyle" BasedOn="{StaticResource LabelBaseStyle}" TargetType="{x:Type Label}">
+                <Setter Property="FontSize"
+                Value="20" />
+    </Style>
+
     <Style TargetType="{x:Type StackPanel}">
         <Setter Property="Margin"
                 Value="7" />
     </Style>
-    
-     <Style TargetType="{x:Type ScrollViewer}">
+
+    <Style TargetType="{x:Type ScrollViewer}">
         <Setter Property="BorderBrush"
                 Value="{StaticResource AccentColorBrush}" />
     </Style>

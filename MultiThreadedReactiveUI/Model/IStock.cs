@@ -2,7 +2,6 @@
 {
     public interface IStock
     {
-        decimal AveragePrice { get; set; }
         decimal DividendYield { get; set; }
         decimal FixedDividend { get; set; }
         decimal LastDividend { get; set; }

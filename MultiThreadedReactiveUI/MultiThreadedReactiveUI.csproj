@@ -164,6 +164,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\PercentageConverter.cs" />
     <Compile Include="DataProvider\StocksDataProvider.cs" />
     <Compile Include="DataProvider\IStocksDataProvider.cs" />
     <Compile Include="Converters\EnumToCollectionConverter.cs" />
@@ -180,42 +181,22 @@
     <Compile Include="PercentageConverter.cs" />
     <Compile Include="DispatcherExtensions.cs" />
     <Compile Include="Model\Constants.cs" />
-    <Compile Include="Model\RndFunction.cs" />
-    <Compile Include="Model\SqrtFunction.cs" />
-    <Compile Include="Model\TanFunction.cs" />
-    <Compile Include="Model\LnFunction.cs" />
-    <Compile Include="Model\CosFunction.cs" />
     <Compile Include="ViewModel\AsyncVoid.cs" />
     <Compile Include="ViewModel\CancelRunViewModel.cs" />
     <Compile Include="ViewModel\IStocksViewModel.cs" />
     <Compile Include="ViewModel\StockTradeExecutionTaskViewModel.cs" />
     <Compile Include="ViewModel\ComputationTaskViewModel.cs" />
-    <Compile Include="Model\IFunction.cs" />
-    <Compile Include="Model\SinFunction.cs" />
     <Compile Include="ViewModel\ICancelRunViewModel.cs" />
-    <Compile Include="ViewModel\IMainViewModel.cs" />
     <Compile Include="ViewModel\StocksViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\Observable.cs" />
     <Compile Include="Model\TradeType.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataProvider\FunctionDataProvider.cs" />
-    <Compile Include="DataProvider\IFunctionDataProvider.cs" />
-    <Compile Include="DesignTimeData\DesignFunction.cs" />
     <Compile Include="DesignTimeData\DesignFriendDataProvider.cs" />
     <Compile Include="IoCContainer.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Page Include="Properties\DesignTimeResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -246,7 +227,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Function.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
