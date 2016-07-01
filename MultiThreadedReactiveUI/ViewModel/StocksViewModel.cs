@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -15,7 +16,7 @@ using MultiThreadedReactiveUI.DataProvider;
 using MultiThreadedReactiveUI.Model;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System.Reactive.Concurrency;
+using MultiThreadedReactiveUI.Extensions;
 
 #endregion
 
@@ -28,6 +29,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         private readonly IStocksDataProvider _DataProvider;
         int CurrentLoopCounter;
 
+
         public StocksViewModel(IStocksDataProvider dataProvider, IContainer container)
         {
 
@@ -37,12 +39,20 @@ namespace MultiThreadedReactiveUI.ViewModel
             SelectedStocks = new ReactiveList<Stock>();
             TradesToExecute = new ReactiveList<StockTradeExecutionTaskViewModel>();
             TradesExecuted = new ReactiveList<StockTradeExecutionTaskViewModel>();
-            TradesExecutedValues = new Subject<StockTradeExecutionTaskViewModel>();
-            TradesExecutedValuesBuffer = new Subject<StockTradeExecutionTaskViewModel>();
+            var window = TimeSpan.FromSeconds(20);
+            TradesExecutedStream = new ReplaySubject<StockTradeExecutionTaskViewModel>(window);
+            //TradesExecutedStream.Subscribe(x => Console.WriteLine(x.Symbol));
+
+
+            //TradesExecutedValuesBuffer = TradesExecutedStream.Timestamp().SlidingWindow(TimeSpan.FromSeconds(20));
+            //TradesExecutedValuesBuffer.Dump("Dumping TradesExecutedValuesBuffer");
+
+
+            //TradesExecutedValuesBuffer = new Subject<StockTradeExecutionTaskViewModel>();
 
 
 
-            TradesExecutedValues.Subscribe(TradeExecuted, TradeError, TradeCompleted);
+            TradesExecutedStream.Subscribe(TradeOnNext, TradeOnError, TradeOnCompleted);
 
             ResetStocksData();
 
@@ -50,7 +60,7 @@ namespace MultiThreadedReactiveUI.ViewModel
 
             StartExecutingTrades = ReactiveCommand.CreateAsyncTask<AsyncVoid>(_ => { return RunTradesToExecuteAsync(); });
 
-            AddStockToTradesToExecute = ReactiveCommand.CreateAsyncTask<List<StockTradeExecutionTaskViewModel>>(_ => { return AddStockToStocksToExecuteAsync(); });
+            AddStockToTradesToExecute = ReactiveCommand.CreateAsyncTask<List<StockTradeExecutionTaskViewModel>>(_ => { return AddStockToTradesToExecuteAsync(); });
             AddStockToTradesToExecute
                     .Subscribe(p =>
                     {
@@ -58,7 +68,7 @@ namespace MultiThreadedReactiveUI.ViewModel
                         {
                             TradesToExecute.Clear();
                             TradesToExecute.AddRange(p);
-                            SelectedStockToTrade = TradesToExecute.LastOrDefault();
+                            //SelectedStockToTrade = TradesToExecute.LastOrDefault();
                         }
                     });
             AddStockToTradesToExecute.ThrownExceptions.Subscribe(
@@ -92,7 +102,7 @@ namespace MultiThreadedReactiveUI.ViewModel
 
         }
 
-        private Task<List<StockTradeExecutionTaskViewModel>> AddStockToStocksToExecuteAsync()
+        private Task<List<StockTradeExecutionTaskViewModel>> AddStockToTradesToExecuteAsync()
         {
             return Task.Run(() =>
             {
@@ -155,36 +165,39 @@ namespace MultiThreadedReactiveUI.ViewModel
             });
         }
 
-        private void ComputeStockStatistics()
+        private Stock ComputeStockStatistics(Stock stock)
         {
-            var currentBufferItems = TradesExecutedValuesBuffer.Select(x => x);
-            //foreach (var item in TradesExecutedValuesBuffer)
-            //{
-                
-            //}
-            //Splitting a stream into buffers of 20 days, each buffer starting on the
-            //next StockQuote instance.  Because we are
-            //returning the last Stock Quote instance from the buffer
-            //the first output of this observable would be the 20th instance of the StockQuote
-            //with its averages calculated
-
-            //var quotesWithMovingAverage = TradesExecutedValues.Where(q => q.Stock.Symbol == viewModel.Stock.Symbol).Buffer(TimeSpan.FromMinutes(15)).Select(list => Average(list));
-            //var quotesWithMovingAverage = TradesExecutedValues.Where(q => q.Symbol == viewModel.Symbol).Buffer(10).Select(list => Average(list));
-
-            //var sourceList = TradesExecutedValuesBuffer.ToList() as List<StockTraydeExecutionTaskViewModel>;
-            //foreach (var item in sourceList)
-            //{
-            //    Debug.WriteLine(String.Format("Buffered Stock: {0}", item.Symbol));
-            //}
-            //TradesExecutedValuesBuffer.Dump("Trades from Last Five Seconds");
-            //var average = TradesExecutedValues.Average(x => x.Price);
-            //TradesExecutedValues.Average(x => x.Price).Dump(nameof(Average));
-            //Debug.WriteLine(String.Format("Computed Average Price of: {0}", average));
-
-            //TradesExecutedValues.Window(10)
-            //.Select(window => window.Average())
-            //.SelectMany(averageSequence => averageSequence);
+            if (stock.LastDividend > 0)
+            {
+                var peRatio = Math.Round((stock.Price / stock.LastDividend), 2);
+                stock.PERatio = peRatio;
+            }
+            if (stock.Price > 0)
+            {
+                decimal dividendYield = 0;
+                switch (stock.Type)
+                {
+                    case StockType.Common:
+                        dividendYield = Math.Round((stock.LastDividend / stock.Price), 2);
+                        break;
+                    case StockType.Preferred:
+                        dividendYield = Math.Round((((stock.FixedDividend / 100) * stock.ParValue) / stock.Price), 2);
+                        break;
+                }
+                stock.DividendYield = dividendYield;
+            }
+            return stock;
         }
+
+        private void RemoveExecutedTradesFromTradesToExecute(StockTradeExecutionTaskViewModel trade)
+        {
+            Application.Current.Dispatcher.InvokeIfRequired(() =>
+             {
+                 int index = TradesToExecute.IndexOf(trade);
+                 //TradesToExecute.RemoveAt(index);
+             }, Container);
+        }
+
 
 
         private Task<List<StockTradeExecutionTaskViewModel>> RemoveStockFromStocksToExecuteAsync()
@@ -210,38 +223,6 @@ namespace MultiThreadedReactiveUI.ViewModel
             }
 
             UpdateIndex();
-        }
-
-        private void UpdateIndex()
-        {
-            Application.Current.Dispatcher.InvokeIfRequired(() =>
-            {
-                    var index = Stocks.Select(x => x.Price).Average();
-                    AllShareIndex = index;
-            }, Container);
-        }
-
-        private Stock ComputeStockStatistics(Stock stock)
-        {
-            if (stock.LastDividend > 0) {
-                var peRatio = Math.Round((stock.Price / stock.LastDividend),2);
-                stock.PERatio = peRatio;
-            }
-            if (stock.Price > 0)
-            {
-                decimal dividendYield = 0;
-                switch (stock.Type)
-                {
-                    case StockType.Common:
-                        dividendYield = Math.Round((stock.LastDividend / stock.Price), 2);
-                        break;
-                    case StockType.Preferred:
-                        dividendYield = Math.Round((((stock.FixedDividend / 100) * stock.ParValue) / stock.Price),2);
-                        break;
-                }
-                stock.DividendYield = dividendYield;
-            }
-            return stock;
         }
 
         private void ResetStockTradeExecutionTaskViewModel()
@@ -286,8 +267,9 @@ namespace MultiThreadedReactiveUI.ViewModel
             po.MaxDegreeOfParallelism = System.Environment.ProcessorCount;
 
             //There is a difference between specifying Scheduler.Default and not specifying a scheduler. Using Scheduler.Default will introduce asynchronous and possibly concurrent behavior, while not supplying a scheduler leaves it up to the discretion of the operator. Some operators will choose to execute synchronously while others will execute asynchronously, while others will choose to jump threads.
-            //TradesExecutedValuesBuffer.Buffer(TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(20), Scheduler.Default).Subscribe(TradeBufferOnNext, TradeBufferOnError, TradeBufferOnCompleted);
-            TradesExecutedValuesBuffer.Buffer(TimeSpan.FromSeconds(20), Scheduler.Default).Subscribe(TradeBufferOnNext, TradeBufferOnError, TradeBufferOnCompleted);
+            //TradesExecutedValuesBuffer.Buffer(TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(15), Scheduler.Default).Subscribe(TradeBufferOnNext, TradeBufferOnError, TradeBufferOnCompleted);
+
+            //TradesExecutedValuesBuffer.Buffer(TimeSpan.FromSeconds(20), Scheduler.Default).Subscribe(TradeBufferOnNext, TradeBufferOnError, TradeBufferOnCompleted);
 
             //TradesExecutedValuesBuffer.Buffer(TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(15)).Subscribe(TradeBufferOnNext, TradeBufferOnError, TradeBufferOnCompleted);
             //TradesExecutedValuesBuffer.Buffer(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1)).Subscribe(TradeBufferOnNext, TradeBufferOnError, TradeBufferOnCompleted);
@@ -295,6 +277,8 @@ namespace MultiThreadedReactiveUI.ViewModel
             //TradesExecutedValuesBuffer.Buffer(TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(20)).Subscribe(TradeBufferOnNext, TradeBufferOnError, TradeBufferOnCompleted);
 
             //TradesExecutedValuesBuffer.Buffer(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1)).Select(CurrentTradeBufferList => CurrentTradeBufferList).Subscribe(TradeBufferOnNext, TradeBufferOnError, TradeBufferOnCompleted);
+
+
 
 
             ConcurrentDictionary<int, StockTradeExecutionTaskViewModel> tasks = new ConcurrentDictionary<int, StockTradeExecutionTaskViewModel>();
@@ -307,7 +291,10 @@ namespace MultiThreadedReactiveUI.ViewModel
                 {
                     SimulateTrades(StockTradeExecutionTaskViewModel);
                     UpdateTradesExecuted(StockTradeExecutionTaskViewModel.Value);
-                    TradesExecutedValuesBuffer.OnNext(StockTradeExecutionTaskViewModel.Value);
+                    TradesExecutedStream.OnNext(StockTradeExecutionTaskViewModel.Value);
+
+
+
 
                     int percentCompleteAllTasks = (int)Math.Round((double)(100 * CurrentLoopCounter) / TotalIterationsForAllTasks);
                     SetProgress(percentCompleteAllTasks);
@@ -317,6 +304,16 @@ namespace MultiThreadedReactiveUI.ViewModel
                         SetComputationViewModelBusyIndicator(false);
                         SetProgress(100);
                         ToggleRunCancelCommand();
+
+                        List<StockTradeExecutionTaskViewModel> snapshot = new List<StockTradeExecutionTaskViewModel>();
+                        using (TradesExecutedStream.Subscribe(item => snapshot.Add(item)))
+                        {
+                            foreach (var item in snapshot)
+                            {
+                                Debug.WriteLine(String.Format("Traded: {0} Price:{1} Quantity:{2}", item.Symbol, item.Price, item.Quantity));
+                            }
+
+                        }
                     }
 
                 });
@@ -327,12 +324,10 @@ namespace MultiThreadedReactiveUI.ViewModel
             }
             finally
             {
-                ComputeStockStatistics();
-                TradesExecutedValues.OnCompleted();
+                //TradesExecutedStream.OnCompleted();
             }
 
         }
-
 
         private void SetComputationViewModelBusyIndicator(bool value)
         {
@@ -380,6 +375,9 @@ namespace MultiThreadedReactiveUI.ViewModel
                 UpdateStockTradeExecutionTaskViewModel(stockTradeExecutionTaskViewModel, progress);
                 Thread.Sleep(20);
             }
+            if (progress > 100) RemoveExecutedTradesFromTradesToExecute(stockTradeExecutionTaskViewModel.Value);
+
+
 
         }
 
@@ -410,7 +408,8 @@ namespace MultiThreadedReactiveUI.ViewModel
 
         private void TradeBufferOnNext(IList<StockTradeExecutionTaskViewModel> trades)
         {
-            if (trades.Count > 0) {
+            if (trades.Count > 0)
+            {
                 var currentSymbols = trades.Select(x => x.Symbol).Distinct();
                 foreach (var symbol in currentSymbols)
                 {
@@ -418,9 +417,10 @@ namespace MultiThreadedReactiveUI.ViewModel
                     var tradesInCurrentStock = trades.Select(x => x).Where(y => y.Symbol == symbol);
                     var totalQuantiy = tradesInCurrentStock.Select(x => x.Quantity).Sum();
                     var priceTimesQuantity = tradesInCurrentStock.Select(x => x.Quantity * x.Price).Sum();
-                    var currentPrice = priceTimesQuantity / totalQuantiy;
-                    Debug.WriteLine(String.Format("TradeBufferOnNext: {0} Price:{1} Quantity:{2}", symbol, currentPrice, totalQuantiy));
+                    var currentPrice = Math.Round(priceTimesQuantity / totalQuantiy, 2);
+
                     stock.Price = currentPrice;
+                    Debug.WriteLine(String.Format("TradeBufferOnNext Average Price: {0} StockPrice:{1} Quantity:{2}", currentPrice, stock.Price, totalQuantiy));
                     stock = ComputeStockStatistics(stock);
                     UpdateUIStockPrice(stock);
                     UpdateIndex();
@@ -431,45 +431,60 @@ namespace MultiThreadedReactiveUI.ViewModel
                 Debug.WriteLine(String.Format("TradeBufferOnNext: viewModelList.Count:{0} Buffer now empty!", trades.Count));
         }
 
-        private void UpdateUIStockPrice(Stock stock)
-        {
-            Application.Current.Dispatcher.InvokeIfRequired(() =>
-             {
-                 int index = Stocks.IndexOf(stock);
-                 var verd = Stocks[index];
-                 Stocks.RemoveAt(index);
-                 Stocks.Insert(index, stock);
-                 verd = Stocks[index];
-                 //var currentlyDisplayed = Stocks.Select(x => x).Where(x => x.Symbol == stock.Symbol).FirstOrDefault();
-                 //currentlyDisplayed = stock;
-             }, Container);
-        }
-
-        private void TradeCompleted()
+        private void TradeOnCompleted()
         {
             Debug.WriteLine(String.Format("Trade Completed"));
         }
 
-        private void TradeError(Exception ex)
+        private void TradeOnError(Exception ex)
         {
             Debug.WriteLine(String.Format("Trade Error: {0}", ex.Message));
         }
 
-        private void TradeExecuted(StockTradeExecutionTaskViewModel viewModel)
+        private void TradeOnNext(StockTradeExecutionTaskViewModel viewModel)
         {
             Debug.WriteLine(String.Format("Traded: {0} Price:{1} Quantity:{2}", viewModel.Symbol, viewModel.Price, viewModel.Quantity));
-            TradesExecutedValuesBuffer.OnNext(viewModel);
+
+            //var heh = new FixedReplaySubject<StockTradeExecutionTaskViewModel>(TradesExecutedStream);
+            //var snap = heh.Snapshot();
+            //TradesExecutedStream.Dump("Dumping TradesExecutedStream");
+
+        }
+
+        public static List<T> Snapshot<T>(ReplaySubject<T> subject)
+        {
+            List<T> snapshot = new List<T>();
+            using (subject.Subscribe(item => snapshot.Add(item)))
+            {
+                // Deliberately empty; subscribing will add everything to the list.
+                foreach (var t in snapshot)
+                {
+                    
+                }
+            }
+            return snapshot;
+        }
+
+        private void UpdateIndex()
+        {
+            Application.Current.Dispatcher.InvokeIfRequired(() =>
+            {
+                var index = Stocks.Select(x => x.Price).Average();
+                AllShareIndex = index;
+            }, Container);
         }
 
         private void UpdateStockTradeExecutionTaskViewModel(KeyValuePair<int, StockTradeExecutionTaskViewModel> StockTradeExecutionTaskViewModel, int progress)
         {
             Application.Current.Dispatcher.InvokeIfRequired(() =>
              {
-                 var viewModelToUpdate = TradesToExecute[StockTradeExecutionTaskViewModel.Key];
-                 Debug.WriteLine(String.Format("Updating ViewModel for Stock: {0} Key: {1} Progress: {2}", viewModelToUpdate.Symbol, viewModelToUpdate.Timestamp, progress));
-                 viewModelToUpdate.IsIndeterminate = false;
-                 viewModelToUpdate.Progress = progress;
-
+                 var viewModelToUpdate = TradesToExecute.ElementAtOrDefault(StockTradeExecutionTaskViewModel.Key);
+                 if (viewModelToUpdate != null)
+                 {
+                     Debug.WriteLine(String.Format("Updating ViewModel for Stock: {0} Key: {1} Progress: {2}", viewModelToUpdate.Symbol, viewModelToUpdate.Timestamp, progress));
+                     viewModelToUpdate.IsIndeterminate = false;
+                     viewModelToUpdate.Progress = progress;
+                 }
              }, Container);
         }
 
@@ -483,12 +498,27 @@ namespace MultiThreadedReactiveUI.ViewModel
              }, Container);
         }
 
+        private void UpdateUIStockPrice(Stock stock)
+        {
+            Application.Current.Dispatcher.InvokeIfRequired(() =>
+             {
+                 int index = Stocks.IndexOf(stock);
+                 Stocks.RemoveAt(index);
+                 Stocks.Insert(index, stock);
+             }, Container);
+        }
+
         private CancellationTokenSource CancellationTokenSource { get; set; }
+
+        IObservable<IReadOnlyList<Timestamped<StockTradeExecutionTaskViewModel>>> TradesExecutedValuesBuffer { get; set; }
 
 
 
 
         public ReactiveCommand<List<StockTradeExecutionTaskViewModel>> AddStockToTradesToExecute { get; protected set; }
+
+        [Reactive]
+        public decimal AllShareIndex { get; set; }
         public ReactiveCommand<AsyncVoid> CancelRunningStocksToExecute { get; protected set; }
 
         [Reactive]
@@ -502,6 +532,7 @@ namespace MultiThreadedReactiveUI.ViewModel
         public StockTradeExecutionTaskViewModel CurrentStockTradeExecutionTaskViewModel { get; set; }
         [Reactive]
         public StockTradeExecutionTaskViewModel CurrentStockTradeExecutionTaskViewModelIndex { get; set; }
+        public Func<IList<StockTradeExecutionTaskViewModel>, object> CurrentTradeBufferList { get; private set; }
         [Reactive]
         public string ExecutionLabel { get; set; }
         [Reactive]
@@ -521,9 +552,6 @@ namespace MultiThreadedReactiveUI.ViewModel
         [Reactive]
         public ReactiveList<Stock> Stocks { get; set; }
 
-        [Reactive]
-        public decimal AllShareIndex { get; set; }
-
         public Dictionary<string, ReactiveCommand<AsyncVoid>> ToggleExecutionDictionary { get; set; }
         [Reactive]
         public int TotalIterationsForAllTasks { get; set; }
@@ -532,10 +560,8 @@ namespace MultiThreadedReactiveUI.ViewModel
         [Reactive]
         public ReactiveList<StockTradeExecutionTaskViewModel> TradesExecuted { get; set; }
 
-        public Subject<StockTradeExecutionTaskViewModel> TradesExecutedValues { get; set; }
-        public Subject<StockTradeExecutionTaskViewModel> TradesExecutedValuesBuffer { get; set; }
+        public ReplaySubject<StockTradeExecutionTaskViewModel> TradesExecutedStream { get; set; }
         [Reactive]
         public ReactiveList<StockTradeExecutionTaskViewModel> TradesToExecute { get; set; }
-        public Func<IList<StockTradeExecutionTaskViewModel>, object> CurrentTradeBufferList { get; private set; }
     }
 }

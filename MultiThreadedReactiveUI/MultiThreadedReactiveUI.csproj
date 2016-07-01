@@ -64,6 +64,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -169,6 +170,7 @@
     <Compile Include="DataProvider\IStocksDataProvider.cs" />
     <Compile Include="Converters\EnumToCollectionConverter.cs" />
     <Compile Include="Converters\EnumHelper.cs" />
+    <Compile Include="Extensions\FixedReplaySubject`1.cs" />
     <Compile Include="Extensions\RxExtensions.cs" />
     <Compile Include="Model\IStock.cs" />
     <Compile Include="Model\Stock.cs" />

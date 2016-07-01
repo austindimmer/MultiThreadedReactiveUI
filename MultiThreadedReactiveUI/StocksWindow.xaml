@@ -77,7 +77,7 @@
                     Grid.ColumnSpan="2"
                     VerticalAlignment="Bottom">
             <Label Grid.Row="0"
-                   Style="{StaticResource HeaderLabelStyle}">2. Set Price and Quantity then Execute Trades</Label>
+                   Style="{StaticResource HeaderLabelStyle}">2. Set Price, Quantity then Execute</Label>
         </StackPanel>
 
         <Grid x:Name="TradeSelectorLayout"

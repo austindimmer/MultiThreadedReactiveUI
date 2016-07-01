@@ -134,28 +134,38 @@ namespace MultiThreadedReactiveUI.Extensions
         }
 
         public static IObservable<IList<T>> SlidingWindow<T>(
-       this IObservable<T> src,
-       int windowSize)
+            this IObservable<T> src,
+            int windowSize)
         {
+            //Call this method as follows
+            //var source = Observable.Range(0, 10);
+            //var query = source.SlidingWindow(3);
+            //using (query.Subscribe(Console.WriteLine))
+            //{
+            //    Console.ReadLine();
+            //}
             var feed = src.Publish().RefCount();
             // (skip 0) + (skip 1) + (skip 2) + ... + (skip nth) => return as list  
             return Observable.Zip(
-               Enumerable.Range(0, windowSize)
-                   .Select(skip => feed.Skip(skip))
-                   .ToArray());
+            Enumerable.Range(0, windowSize)
+                .Select(skip =>
+                {
+                    Console.WriteLine("Skipping {0} els", skip);
+                    return feed.Skip(skip);
+                })
+                .ToArray());
         }
 
         public static IObservable<IReadOnlyList<Timestamped<T>>> SlidingWindow<T>(this IObservable<Timestamped<T>> self, TimeSpan length)
         {
-            var list = new LinkedList<Timestamped<T>>();
             return self.Scan(new LinkedList<Timestamped<T>>(),
                              (ll, newSample) =>
                              {
                                  ll.AddLast(newSample);
                                  var oldest = newSample.Timestamp - length;
-                                 while (ll.Count > 0 && list.First.Value.Timestamp < oldest)
-                                     list.RemoveFirst();
-                                 return list;
+                                 while (ll.Count > 0 && ll.First.Value.Timestamp < oldest)
+                                     ll.RemoveFirst();
+                                 return ll;
                              }).Select(l => l.ToList().AsReadOnly());
         }
 
