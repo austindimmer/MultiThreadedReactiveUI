@@ -5,6 +5,7 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace MultiThreadedReactiveUI.Extensions
 {
@@ -167,6 +168,20 @@ namespace MultiThreadedReactiveUI.Extensions
                                      ll.RemoveFirst();
                                  return ll;
                              }).Select(l => l.ToList().AsReadOnly());
+        }
+
+        public static List<T> Snapshot<T>(ReplaySubject<T> subject)
+        {
+            List<T> snapshot = new List<T>();
+            using (subject.Subscribe(item => snapshot.Add(item)))
+            {
+                // Deliberately empty; subscribing will add everything to the list.
+                foreach (var t in snapshot)
+                {
+
+                }
+            }
+            return snapshot;
         }
 
 
